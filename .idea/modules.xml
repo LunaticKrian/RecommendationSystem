@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/SystemParent/SystemParent.iml" filepath="$PROJECT_DIR$/SystemParent/SystemParent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SystemParent/system-common/system-common.iml" filepath="$PROJECT_DIR$/SystemParent/system-common/system-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SystemParent/system-core/system-core.iml" filepath="$PROJECT_DIR$/SystemParent/system-core/system-core.iml" />
+    </modules>
+  </component>
+</project>
