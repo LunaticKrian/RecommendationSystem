@@ -1,7 +1,7 @@
 package com.mislab.core.systemcore.mapper;
 
-import com.mislab.core.systemcore.pojo.entity.AffiliateEnterprise;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mislab.core.systemcore.pojo.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
