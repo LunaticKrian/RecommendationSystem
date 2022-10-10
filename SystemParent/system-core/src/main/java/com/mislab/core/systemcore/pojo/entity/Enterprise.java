@@ -92,7 +92,4 @@ public class Enterprise implements Serializable {
 
     private LocalDateTime updateTime;
 
-    @ApiModelProperty(value = "主营业务")
-    private String business_list;
-
 }

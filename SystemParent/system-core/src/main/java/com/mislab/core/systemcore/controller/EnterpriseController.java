@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,14 +30,17 @@ public class EnterpriseController {
     private EnterpriseService enterpriseService;
 
 
-    @ApiOperation("保存企业基本信息")
+    @ApiOperation("保存/修改企业基本信息")
     @PostMapping("/saveEnterpriseMsg")
     public R saveEnterpriseMsg(@RequestBody EnterpriseBasicMsgDto enterpriseBasicMsgDto){
-        boolean res = enterpriseService.saveEnterpriseMsg(enterpriseBasicMsgDto);
-        if(!res){
-            return R.ERROR().message("保存失败");
+        String enterpriseKey = enterpriseBasicMsgDto.getEnterpriseKey();
+        if(StringUtils.isEmpty(enterpriseKey)){
+            //新增企业基本信息
+            return enterpriseService.saveEnterpriseMsg(enterpriseBasicMsgDto);
+        }else{
+            //修改企业基本信息
+            return enterpriseService.updateEnterpriseMsg(enterpriseBasicMsgDto);
         }
-        return R.SUCCESS().message("保存成功");
     }
 }
 

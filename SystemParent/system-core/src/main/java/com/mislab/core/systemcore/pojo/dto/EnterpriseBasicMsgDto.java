@@ -47,6 +47,15 @@ public class EnterpriseBasicMsgDto implements Serializable {
     @ApiModelProperty(value = "法定代表人")
     private String legalPerson;
 
+    @ApiModelProperty(value = "人员数量")
+    private Integer personNum;
+
+    @ApiModelProperty(value = "总资产 : 单位(万)")
+    private Double totalAsstes;
+
+    @ApiModelProperty(value = "企业类型,若企业为高新技术企业和西部大开发企业有税率减免(1 普通 25% 2 高新 15% 3 西部大开发 15%)")
+    private Integer enterpriseType;
+
     @ApiModelProperty(value = "是否对外投资")
     private Integer investmentAbroad;
 

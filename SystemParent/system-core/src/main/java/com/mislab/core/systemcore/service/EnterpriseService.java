@@ -1,8 +1,9 @@
 package com.mislab.core.systemcore.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.mislab.common.result.R;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
 import com.mislab.core.systemcore.pojo.entity.Enterprise;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -19,5 +20,7 @@ public interface EnterpriseService extends IService<Enterprise> {
      * @param enterpriseBasicMsgDto
      * @return
      */
-    boolean saveEnterpriseMsg(EnterpriseBasicMsgDto enterpriseBasicMsgDto);
+    R saveEnterpriseMsg(EnterpriseBasicMsgDto enterpriseBasicMsgDto);
+
+    R updateEnterpriseMsg(EnterpriseBasicMsgDto enterpriseBasicMsgDto);
 }
