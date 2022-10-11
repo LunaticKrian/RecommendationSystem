@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
-import com.mislab.core.systemcore.mapper.BusinessIndustryMapper;
 import com.mislab.core.systemcore.mapper.BusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
@@ -13,6 +12,9 @@ import com.mislab.core.systemcore.pojo.entity.Business;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
 import com.mislab.core.systemcore.pojo.entity.Enterprise;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
+import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
+import com.mislab.core.systemcore.pojo.jsonDomain.ShareholderInfo;
+import com.mislab.core.systemcore.pojo.vo.EnterpriseBasicMsgVo;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,10 +44,10 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
     private BusinessMapper businessMapper;
 
     @Autowired
-    private BusinessIndustryMapper businessIndustryMapper;
+    private EmployeeEnterpriseService employeeEnterpriseService;
 
     @Autowired
-    private EmployeeEnterpriseService employeeEnterpriseService;
+    private EnterpriseMapper enterpriseMapper;
 
     /**
      * 保存企业信息
@@ -119,6 +122,67 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         }
         this.update(enterprise,new LambdaQueryWrapper<Enterprise>().eq(Enterprise::getEnterpriseKey,enterpriseKey));
         return R.SUCCESS().data("enterprise_key", enterpriseKey);
+    }
+
+    @Override
+    @Transactional
+    public R getEnterpriseMsgOfFirst(String enterpriseKey) {
+        //声明企业基本信息数据返回对象
+        EnterpriseBasicMsgVo enterpriseBasicMsgVo = new EnterpriseBasicMsgVo();
+        //通过企业唯一标识码获取数据库中的企业信息
+        Enterprise enterprise = enterpriseMapper.selectOne(new LambdaQueryWrapper<Enterprise>()
+                .eq(Enterprise::getEnterpriseKey, enterpriseKey));
+        //通过企业业务关联表获取企业对应的业务
+        List<EnterpriseBusiness> enterpriseBusinesses = enterpriseBusinessMapper.selectList(new LambdaQueryWrapper<EnterpriseBusiness>()
+                .eq(EnterpriseBusiness::getEnterpriseKey, enterpriseKey));
+        List<String> business_list = new ArrayList<>();
+        for(EnterpriseBusiness enterpriseBusiness : enterpriseBusinesses){
+            //获取行业对应的一个业务名称
+            String businessName = businessMapper.selectOne(new LambdaQueryWrapper<Business>()
+                    .eq(Business::getId, enterpriseBusiness.getBusinessId())).getName();
+            business_list.add(businessName);
+        }
+        enterpriseBasicMsgVo.setBusiness_list(business_list);
+
+        //转化股东信息以及对外投资信息  将JSON字符串数组转对象集合
+        enterpriseBasicMsgVo.setShareholderInfo(JSON.parseArray(enterprise.getShareholderInfo()).toJavaList(ShareholderInfo.class));
+        enterpriseBasicMsgVo.setInvestee(JSON.parseArray(enterprise.getInvestee()).toJavaList(Investee.class));
+
+        //计算税率
+        List<Double> taxRateList = new ArrayList<>();
+        if(enterprise.getTaxpayerQualification() == 1){
+            //小规模纳税人
+            Integer invoiceType = enterprise.getInvoiceType();
+            if (invoiceType == 0){
+                //专票
+                taxRateList.add(0.03);
+            }else if(invoiceType == 1){
+                //普票
+                taxRateList.add(0.00);
+            }else if(invoiceType == 2){
+                //专票+普票
+                taxRateList.add(0.03);
+                taxRateList.add(0.00);
+            }
+        }else{
+            //一般纳税人
+            for (String businessName : business_list){
+                //这里目前只能固定写
+                if (businessName.equals("运输服务")){
+                    taxRateList.add(0.09);
+                }else if (businessName.equals("车辆销售")){
+                    taxRateList.add(0.13);
+                }else {
+                    //其他主营业务,税率为6
+                    taxRateList.add(0.06);
+                }
+            }
+        }
+        enterpriseBasicMsgVo.setTaxRate(taxRateList);
+
+        //复制企业的其他信息到enterpriseBasicMsgVo对象
+        BeanUtils.copyProperties(enterprise,enterpriseBasicMsgVo);
+        return R.SUCCESS().data("enterpriseBasicMsgVo",enterpriseBasicMsgVo);
     }
 
 }

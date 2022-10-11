@@ -2,10 +2,7 @@ package com.mislab.core.systemcore.pojo.jsonDomain;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -14,6 +11,7 @@ import java.io.Serializable;
 @ApiModel(value="股东信息", description="")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ShareholderInfo implements Serializable {
 
     @ApiModelProperty(value = "股东姓名")

@@ -49,7 +49,7 @@ public class EnterpriseController {
         }
     }
 
-    @ApiOperation("获取企业基本信息")
+    @ApiOperation("获取第一页面的企业基本信息")
     @GetMapping("/getEnterpriseMsgOfFirst")
     public R getEnterpriseMsgOfFirst(@ApiParam("企业唯一标识码") String enterpriseKey,@ApiParam("员工编号") String uid){
         //获取企业与员工的关联关系
@@ -60,10 +60,11 @@ public class EnterpriseController {
         if(employeeEnterprise == null){
             return R.ERROR().message("该企业与员工没有对应关系");
         }else {
+            //如果存在关系，但该企业已经被逻辑删除
             Integer state = employeeEnterprise.getState();
             if (state == 0) return R.ERROR().message("该企业信息已经不存在");
         }
-        return R.SUCCESS();
+        return enterpriseService.getEnterpriseMsgOfFirst(enterpriseKey);
     }
 }
 

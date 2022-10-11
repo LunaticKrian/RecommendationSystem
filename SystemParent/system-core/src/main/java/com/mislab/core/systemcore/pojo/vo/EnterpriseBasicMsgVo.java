@@ -1,4 +1,4 @@
-package com.mislab.core.systemcore.pojo.dto;
+package com.mislab.core.systemcore.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
@@ -18,15 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel("企业基本信息Dto对象")
-public class EnterpriseBasicMsgDto implements Serializable {
+@ApiModel("企业基本信息Vo对象")
+public class EnterpriseBasicMsgVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(value = "员工id")
-    private String uid;
-
-    @ApiModelProperty(value = "行业id")
-    private Integer industryId;
 
     @ApiModelProperty(value = "企业标识码")
     private String enterpriseKey;
@@ -74,4 +69,8 @@ public class EnterpriseBasicMsgDto implements Serializable {
     @ApiModelProperty(value = "0 专票 1 普票 2 普票加专票 ")
     private Integer invoiceType;
 
+    @ApiModelProperty(value = "税率")
+    private List<Double> taxRate;
+
 }
+
