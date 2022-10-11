@@ -74,6 +74,4 @@ public class EnterpriseBasicMsgDto implements Serializable {
     @ApiModelProperty(value = "0 专票 1 普票 2 普票加专票 ")
     private Integer invoiceType;
 
-    @ApiModelProperty(value = "税率")
-    private Double taxRate;
 }
