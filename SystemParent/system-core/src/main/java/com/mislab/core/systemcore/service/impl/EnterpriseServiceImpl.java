@@ -124,6 +124,12 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         return R.SUCCESS().data("enterprise_key", enterpriseKey);
     }
 
+    /**
+     * 获取第一页面的企业基本信息
+     * @param enterpriseKey
+     * @return
+     * @author ascend
+     */
     @Override
     @Transactional
     public R getEnterpriseMsgOfFirst(String enterpriseKey) {
