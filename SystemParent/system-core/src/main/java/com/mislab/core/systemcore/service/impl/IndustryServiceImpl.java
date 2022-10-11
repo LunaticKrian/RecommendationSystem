@@ -33,6 +33,12 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry> i
     @Autowired
     private BusinessMapper businessMapper;
 
+    /**
+     * 通过行业名称获取其对应业务
+     * @param industryName
+     * @return
+     * @author ascend
+     */
     @Override
     public R getBusinessByIndustry(String industryName) {
         //通过企业名称获取企业id

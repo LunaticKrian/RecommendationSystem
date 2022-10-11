@@ -51,6 +51,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      *
      * @param enterpriseBasicMsgDto
      * @return
+     * @author ascend
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -90,8 +91,10 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * 修改企业基本信息
      * @param enterpriseBasicMsgDto
      * @return
+     * @author ascend
      */
     @Override
+    @Transactional
     public R updateEnterpriseMsg(EnterpriseBasicMsgDto enterpriseBasicMsgDto) {
         String enterpriseKey = enterpriseBasicMsgDto.getEnterpriseKey();
         //直接从前端传入企业key,如果已存在于数据库中则为修改，反之为新增
