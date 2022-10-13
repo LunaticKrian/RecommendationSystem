@@ -1,7 +1,13 @@
 package com.mislab.core.systemcore.service;
 
+import com.mislab.common.result.R;
+import com.mislab.core.systemcore.mapper.CostMapper;
+import com.mislab.core.systemcore.mapper.EnterpriseMapper;
 import com.mislab.core.systemcore.pojo.entity.Cost;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +18,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-09-30
  */
 public interface CostService extends IService<Cost> {
+    public R update(List<Cost> costs, String epKey);
+
+    public List<Cost> getCosts(String enterpriseKey);
+
 
 }

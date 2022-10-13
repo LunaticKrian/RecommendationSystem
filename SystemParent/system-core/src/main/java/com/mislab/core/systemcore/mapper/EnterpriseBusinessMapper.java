@@ -4,6 +4,8 @@ import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -15,5 +17,20 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface EnterpriseBusinessMapper extends BaseMapper<EnterpriseBusiness> {
+
+    /**
+     * 根据enterpriseKey获取相关信息
+     */
+    List<EnterpriseBusiness> getByEnterpriseKey(String EnterpriseKey);
+
+    /**
+     * 根据enterpriseKey放入数据
+     */
+    int setByEnterpriseKey(EnterpriseBusiness enterpriseBusiness,String enterpriseKey);
+
+    /**
+     * 修改已有的enterprise数据
+     */
+    int updateByEnterpriseKey(EnterpriseBusiness enterpriseBusiness);
 
 }

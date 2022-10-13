@@ -12,9 +12,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="system-common" target="17" />
-      <module name="system-core" target="17" />
-      <module name="SystemParent" target="17" />
+      <module name="system-common" target="16" />
+      <module name="system-core" target="16" />
+      <module name="SystemParent" target="16" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

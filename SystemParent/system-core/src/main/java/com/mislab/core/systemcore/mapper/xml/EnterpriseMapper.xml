@@ -2,4 +2,67 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mislab.core.systemcore.mapper.EnterpriseMapper">
 
+    <resultMap type="com.mislab.core.systemcore.pojo.entity.Enterprise" id="Enterprise">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="enterpriseKey" column="enterprise_key" jdbcType="VARCHAR"/>
+        <result property="enterpriseName" column="enterprise_name" jdbcType="INTEGER"/>
+        <result property="enterpriseType" column="enterprise_type" jdbcType="DOUBLE"/>
+        <result property="taxpayernum" column="taxpayernum" jdbcType="DOUBLE"/>
+        <result property="establishTime" column="establish_time" jdbcType="DOUBLE"/>
+        <result property="registeredCapital" column="registered_capital" jdbcType="DOUBLE"/>
+        <result property="personNum" column="person_num" jdbcType="DOUBLE"/>
+        <result property="totalAsstes" column="total_asstes" jdbcType="DOUBLE"/>
+        <result property="legalPerson" column="legal_person" jdbcType="DOUBLE"/>
+        <result property="investmentAbroad" column="investment_abroad" jdbcType="DOUBLE"/>
+        <result property="industryId" column="industry_id" jdbcType="DOUBLE"/>
+        <result property="salesTaxpayer" column="sales_taxpayer" jdbcType="TINYINT"/>
+        <result property="annualTurnover" column="annual_turnover" jdbcType="DOUBLE"/>
+        <result property="annualCost" column="annual_cost" jdbcType="DOUBLE"/>
+        <result property="costType" column="cost_type" javaType="com.alibaba.fastjson.JSONArray" typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler"/>
+        <result property="shareholderInfo" column="legal_person" javaType="com.alibaba.fastjson.JSON" typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler"/>
+        <result property="taxpayerQualification" column="taxpayer_qualification" jdbcType="TINYINT"/>
+        <result property="invoiceType" column="invoice_type" jdbcType="TINYINT"/>
+        <result property="investee" column="investee" javaType="com.alibaba.fastjson.JSON" typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+<!--    第二张表的返回值-->
+    <resultMap id="enterprise2" type="com.mislab.core.systemcore.pojo.dto.Enterprise2VO">
+        <result property="salesTaxpayer" column="sales_taxpayer" jdbcType="TINYINT"/>
+        <result property="annualTurnover" column="annual_turnover" jdbcType="DOUBLE"/>
+        <result property="annualCost" column="annual_cost" jdbcType="DOUBLE"/>
+    </resultMap>
+
+    <update id="updateCostType" keyProperty="id" useGeneratedKeys="true">
+        update enterprise set cost_type = #{costType}
+        where enterpriseKey = #{enterpriseKey}
+    </update>
+
+    <update id="updateSAAEnterprise">
+        update enterprise
+            <set>
+                <if test=" AT != '' and AT != null">
+                    annual_turnover=#{AT}
+                </if>
+                <if test=" AC != '' and AC != null">
+                    annual_cost=#{AC}
+                </if>
+                <if test=" ST != '' and ST != null">
+                    sales_taxpayer=#{AC}
+                </if>
+            </set>
+        where enterpriseKey = #{enterpriseKey}
+    </update>
+
+    <select id="selectCostTypeByKey" resultMap="Enterprise">
+        select cost_type
+        from enterprise
+        where enterprise_key = #{enterprissKey}
+    </select>
+
+    <select id="selectDateIITable" resultMap="enterprise2">
+        select annual_turnover,annual_cost,sales_taxpayer
+        from enterprise
+        where enterprise_key = #{enterpriseKey} ;
+    </select>
 </mapper>

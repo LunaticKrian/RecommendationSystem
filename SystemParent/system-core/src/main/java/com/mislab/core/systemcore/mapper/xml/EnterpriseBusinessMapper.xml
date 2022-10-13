@@ -2,4 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper">
 
+    <resultMap type="com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness" id="EnterpriseBusiness">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="enterpriseKey" column="enterprise_key" jdbcType="VARCHAR"/>
+        <result property="businessId" column="business_id" jdbcType="INTEGER"/>
+        <result property="businessRatio" column="business_ratio" jdbcType="DOUBLE"/>
+        <result property="generalTaxpayerRatio" column="general_taxpayer_ratio" jdbcType="DOUBLE"/>
+        <result property="smallscaleTaxpayerRatio" column="smallscale_taxpayer_ratio" jdbcType="DOUBLE"/>
+        <result property="naturalPersonRatio" column="natural_person_ratio" jdbcType="DOUBLE"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+
+    <!--根据enterpriseKey放入数据-->
+    <insert id="setByEnterpriseKey" useGeneratedKeys="true" keyProperty="id">
+        insert into enterprise_business(enterprise_key,business_id,business_ratio,general_taxpayer_ratio,smallscale_taxpayer_ratio,smallscale_taxpayer_ratio,natural_person_ratio,create_time,update_time)
+        value (#{enterprise_key},#{business_id},#{business_ratio},#{general_taxpayer_ratio},#{smallscale_taxpayer_ratio},#{smallscale_taxpayer_ratio},#{natural_person_ratio},#{create_time},#{update_time})
+    </insert>
+
+    <!--  根据enterpriseKey获取相关信息  -->
+    <select id="getByEnterpriseKey" resultMap="EnterpriseBusiness">
+        select * from enterprise_business
+        where enterprise_key = #{enterpriseKey}
+    </select>
+
+    <!--    修改已有的enterprise数据-->
+    <update id="updateByEnterpriseKey" parameterType="com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness">
+        update enterprise_business
+        set
+            <if test="businessId != null">
+                business_id = #{businessId},
+            </if>
+            <if test="businessRatio != null">
+                business_ratio = #{businessRatio},
+            </if>
+            <if test="generalTaxpayerRatio != null">
+                general_taxpayer_ratio = #{generalTaxpayerRatio},
+            </if>
+            <if test="smallscaleTaxpayerRatio != null">
+                smallscale_taxpayer_ratio = #{smallscaleTaxpayerRatio},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        where enterprise_key = #{enterpriseKey}
+    </update>
 </mapper>
