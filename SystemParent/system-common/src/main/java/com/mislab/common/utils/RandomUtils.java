@@ -17,12 +17,18 @@ public class RandomUtils {
 
 	private static final DecimalFormat sixdf = new DecimalFormat("000000");
 
+	private static final DecimalFormat eigthdf = new DecimalFormat("00000000");
+
 	public static String getFourBitRandom() {
 		return fourdf.format(random.nextInt(10000));
 	}
 
 	public static String getSixBitRandom() {
 		return sixdf.format(random.nextInt(1000000));
+	}
+
+	public static String getEightBitRandom() {
+		return sixdf.format(random.nextInt(100000000));
 	}
 
 	/**

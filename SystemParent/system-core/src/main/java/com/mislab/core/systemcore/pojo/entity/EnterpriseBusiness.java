@@ -2,12 +2,14 @@ package com.mislab.core.systemcore.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -20,11 +22,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="EnterpriseBusiness对象", description="")
+@Builder
 public class EnterpriseBusiness implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @ApiModelProperty(value = "企业key")
@@ -35,6 +38,9 @@ public class EnterpriseBusiness implements Serializable {
 
     @ApiModelProperty(value = "占比")
     private Double businessRatio;
+
+    @ApiModelProperty(value = "单项金额")
+    private Double amount;
 
     @ApiModelProperty(value = "一般纳税人")
     private Double generalTaxpayerRatio;

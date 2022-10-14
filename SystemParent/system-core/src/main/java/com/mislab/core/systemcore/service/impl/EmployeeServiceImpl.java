@@ -1,26 +1,22 @@
 package com.mislab.core.systemcore.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.exception.Assert;
-import com.mislab.common.result.R;
 import com.mislab.common.result.ResponseEnum;
 import com.mislab.common.utils.JwtUtils;
 import com.mislab.common.utils.MD5;
 import com.mislab.core.systemcore.mapper.EmployeeLoginRecordMapper;
-import com.mislab.core.systemcore.pojo.entity.Employee;
 import com.mislab.core.systemcore.mapper.EmployeeMapper;
+import com.mislab.core.systemcore.pojo.entity.Employee;
 import com.mislab.core.systemcore.pojo.entity.EmployeeLoginRecord;
 import com.mislab.core.systemcore.pojo.vo.EmployeeVo;
 import com.mislab.core.systemcore.pojo.vo.LoginVo;
 import com.mislab.core.systemcore.pojo.vo.RegisterVo;
 import com.mislab.core.systemcore.service.EmployeeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 /**
  * <p>
@@ -83,7 +79,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         employee.setName(registerVo.getUid());
         employee.setMobile(registerVo.getMobile());
         employee.setPassword(MD5.encrypt(registerVo.getPassword()));
-        employee.setStatus(Employee.STATUS_LOCKED);
+        //employee.setStatus(Employee.STATUS_LOCKED);
+        //暂时不用管理员审批
+        employee.setStatus(Employee.STATUS_NORMAL);
         employee.setHeadImg(Employee.USER_AVATAR);
 
         baseMapper.insert(employee);

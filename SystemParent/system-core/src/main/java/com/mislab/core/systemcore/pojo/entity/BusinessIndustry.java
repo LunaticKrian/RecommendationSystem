@@ -2,11 +2,13 @@ package com.mislab.core.systemcore.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -19,6 +21,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="BusinessIndustry对象", description="")
+@Builder
 public class BusinessIndustry implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +33,7 @@ public class BusinessIndustry implements Serializable {
     private Integer industryId;
 
     @ApiModelProperty(value = "主营业务id")
-    private String businessId;
+    private Integer businessId;
 
 
 }

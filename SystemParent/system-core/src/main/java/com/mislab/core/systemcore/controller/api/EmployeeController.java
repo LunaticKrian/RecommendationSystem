@@ -1,17 +1,22 @@
 package com.mislab.core.systemcore.controller.api;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mislab.common.exception.Assert;
 import com.mislab.common.result.R;
 import com.mislab.common.result.ResponseEnum;
 import com.mislab.common.utils.RegexValidateUtils;
+import com.mislab.core.systemcore.pojo.entity.Employee;
+import com.mislab.core.systemcore.pojo.vo.EmployeeMsgVo;
 import com.mislab.core.systemcore.pojo.vo.EmployeeVo;
 import com.mislab.core.systemcore.pojo.vo.LoginVo;
 import com.mislab.core.systemcore.pojo.vo.RegisterVo;
 import com.mislab.core.systemcore.service.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +81,16 @@ public class EmployeeController {
         return R.SUCCESS().data("employeeInfo", employeeVo);
     }
 
-
+    @ApiOperation("获取用户基本信息")
+    @GetMapping("getEmployeeMsg")
+    public R getEmployeeMsg(@ApiParam("员工编号") String uid){
+        Employee employee = employeeService.getOne(new LambdaQueryWrapper<Employee>()
+                .eq(Employee::getUid, uid));
+        //封装页面展示用户信息
+        EmployeeMsgVo employeeMsgVo = new EmployeeMsgVo();
+        BeanUtils.copyProperties(employee,employeeMsgVo);
+        return R.SUCCESS().data("employeeMsg",employeeMsgVo);
+    }
 
 }
 
