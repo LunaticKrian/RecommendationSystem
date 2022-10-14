@@ -27,7 +27,7 @@ public class EnterpriseBusiness implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @ApiModelProperty(value = "企业key")
@@ -38,6 +38,9 @@ public class EnterpriseBusiness implements Serializable {
 
     @ApiModelProperty(value = "占比")
     private Double businessRatio;
+
+    @ApiModelProperty(value = "单项金额")
+    private Double amount;
 
     @ApiModelProperty(value = "一般纳税人")
     private Double generalTaxpayerRatio;

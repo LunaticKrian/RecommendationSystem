@@ -129,7 +129,6 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
-                <version>2.2.1</version>
             </dependency>
             <!--excel解析依赖-->
             <dependency>
