@@ -1,5 +1,6 @@
 package com.mislab.core.systemcore.mapper;
 
+import com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,6 +32,6 @@ public interface EnterpriseBusinessMapper extends BaseMapper<EnterpriseBusiness>
     /**
      * 修改已有的enterprise数据
      */
-    int updateByEnterpriseKey(EnterpriseBusiness enterpriseBusiness);
+    int updateByEnterpriseKey(EnterpriseBusinessDTO enterpriseBusinessDTO,String enterpriseKey);
 
 }

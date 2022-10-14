@@ -5,17 +5,16 @@
     <resultMap type="com.mislab.core.systemcore.pojo.entity.Cost" id="EnterpriseBusiness">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="supplierProportion" column="supplier_proportion" javaType="com.alibaba.fastjson.JSONArray" typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler"/>
         <result property="industryId" column="industry_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <insert id="insertCost" keyProperty="id" useGeneratedKeys="true">
         insert into cost(id,name ,supplier_proportion,industry_id)
-        values (#{id},#{name},#{supplier_proportion},#{industry_id})
+        values (#{id},#{name},#{costJson},#{industryId})
     </insert>
     <update id="updateCost" keyProperty="id" useGeneratedKeys="true">
         update cost
-        set name  = #{name},supplier_proportion=#{supplierProportion},industry_id = #{industryId}
+        set name  = #{name},supplier_proportion=#{costJson},industry_id = #{industryId}
         where id = #{costId}
     </update>
 </mapper>

@@ -18,6 +18,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel("第二张表的所需数据")
 public class Enterprise2VO {
+
+    @ApiModelProperty(value = "enterpriseKey")
+    String enterpriseKey;
+
     //int salesTaxpayer, double annualTurnover, double annualCost, String enterpriseKey, List<EnterpriseBusiness> EPBs, List<Cost> costs
     @ApiModelProperty(value = "兼营销售纳税人0 否 1 是")
     private Integer salesTaxpayer;
@@ -29,14 +33,9 @@ public class Enterprise2VO {
     private Double annualCost;
 
     @ApiModelProperty(value = "业务营业额")
-    List<EnterpriseBusiness> EPBs;
-
-    @ApiModelProperty(value = "业务营业额")
-    List<Cost> costs;
+    List<EnterpriseBusinessDTO> EPBs;
 
     @ApiModelProperty(value = "costJson")
-    List<SupplierProportion> supplierProportions;
+    List<CostDto> costDto;
 
-    @ApiModelProperty(value = "enterpriseKey")
-    String enterpriseKey;
 }

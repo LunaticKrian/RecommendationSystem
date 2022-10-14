@@ -1,6 +1,7 @@
 package com.mislab.core.systemcore.service;
 
 import com.mislab.common.result.R;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mislab.core.systemcore.pojo.dto.Enterprise2VO;
@@ -19,7 +20,7 @@ public interface EnterpriseBusinessService extends IService<EnterpriseBusiness> 
     /**
      * 根据enterpriseKey修改数据
      */
-    public R updateByEnterpriseKey(List<EnterpriseBusiness> enterpriseBusiness);
+    public R updateByEnterpriseKey(List<EnterpriseBusinessDTO> enterpriseBusinessDTO,String enterpriseKey);
 
     public List<EnterpriseBusiness> getByEnterpriseKey(String enterpriseKey);
 

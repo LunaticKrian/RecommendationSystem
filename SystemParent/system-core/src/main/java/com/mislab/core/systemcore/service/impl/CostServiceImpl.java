@@ -1,10 +1,14 @@
 package com.mislab.core.systemcore.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
+import com.mislab.core.systemcore.pojo.dto.CostDto;
 import com.mislab.core.systemcore.pojo.entity.Cost;
 import com.mislab.core.systemcore.mapper.CostMapper;
+import com.mislab.core.systemcore.pojo.jsonDomain.SupplierProportion;
 import com.mislab.core.systemcore.service.CostService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +36,14 @@ public class CostServiceImpl extends ServiceImpl<CostMapper, Cost> implements Co
 
 
     @Override
-    public R update(List<Cost> costs, String epKey) {
+    public R update(List<CostDto> costs, String epKey) {
         if (StringUtils.isEmpty(ENTERPRISE_MAPPER.selectCostTypeByKey(epKey))){
             //enterprise内没有costType
             int[] costType = new int[5];
             int i =0;
-            for (Cost cost:costs){
-                JSONArray.parseArray(cost.getSupplierProportions());
-                costType[i] =COST_MAPPER.insertCost(cost);
+            for (CostDto costDto:costs){
+                String costJosn = JSON.toJSONString(costDto.getSupplierProportions());
+                costType[i] =COST_MAPPER.insertCost(costDto,costJosn);
             }
             JSONArray JsonCost = (JSONArray) JSONArray.toJSON(costType);
             ENTERPRISE_MAPPER.updateCostType(epKey,JsonCost);
@@ -56,7 +60,7 @@ public class CostServiceImpl extends ServiceImpl<CostMapper, Cost> implements Co
     }
 
     @Override
-    public List<Cost> getCosts(String epKey) {
+    public List<CostDto> getCosts(String epKey) {
         if (StringUtils.isEmpty(ENTERPRISE_MAPPER.selectCostTypeByKey(epKey))){
             //enterprise内没有costType
             return null;
@@ -65,9 +69,16 @@ public class CostServiceImpl extends ServiceImpl<CostMapper, Cost> implements Co
             String costType = ENTERPRISE_MAPPER.selectCostTypeByKey(epKey);
             //取出已有的costType中的编号
             char[] arr = costType.toCharArray();    // char数组
-            List<Cost> costs = new ArrayList<>();
+            List<CostDto> costs = new ArrayList<>();
             for (int i = 0; i < arr.length; i++) {
-                costs.add(COST_MAPPER.selectById(arr[i]));
+                //costs.add(COST_MAPPER.selectById(arr[i]));
+                Cost cost = COST_MAPPER.selectById(arr[i]);
+                JSONObject costJson =  (JSONObject)JSON.toJSON(cost.getSupplierProportion());
+                JSONArray costJsonJSONArray = costJson.getJSONArray("SupplierProportion");
+                List<SupplierProportion> supplierProportions = JSONArray.parseArray(costJsonJSONArray.toJSONString(),SupplierProportion.class);
+                //List<SupplierProportion> supplierProportions = (List<SupplierProportion>));
+                costs.get(i).setSupplierProportions(supplierProportions);
+                costs.get(i).setCostName(cost.getName());
             }
             return costs;
         }

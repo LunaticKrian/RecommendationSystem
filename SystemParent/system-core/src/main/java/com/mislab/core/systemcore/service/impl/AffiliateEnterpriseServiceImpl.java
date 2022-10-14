@@ -1,5 +1,6 @@
 package com.mislab.core.systemcore.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.core.systemcore.pojo.entity.AffiliateEnterprise;
 import com.mislab.core.systemcore.mapper.AffiliateEnterpriseMapper;
 import com.mislab.core.systemcore.service.AffiliateEnterpriseService;

@@ -2,6 +2,9 @@ package com.mislab.core.systemcore.controller;
 
 
 import com.mislab.common.result.R;
+import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
+import com.mislab.core.systemcore.pojo.dto.CostDto;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO;
 import com.mislab.core.systemcore.pojo.entity.Cost;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.mislab.core.systemcore.pojo.dto.Enterprise2VO;
@@ -43,13 +46,12 @@ public class EnterpriseBusinessController {
     @PostMapping("save")
     public R saveData(@RequestBody Enterprise2VO enterprise2VO){
 
-        R r2 = costService.update(enterprise2VO.getCosts(),enterprise2VO.getEnterpriseKey());
-        enterpriseBusinessService.setSTATAC(enterprise2VO.getEnterpriseKey(),salesTaxpayer,annualTurnover,annualCost);
-        //将获取到的enterpriseKey放入enterpriseBuiness
-        for (EnterpriseBusiness enterpriseBusiness:EPBs){
-            enterpriseBusiness.setEnterpriseKey(enterpriseKey);
-        }
-        R r1 = enterpriseBusinessService.updateByEnterpriseKey(EPBs);
+        R r2 = costService.update(enterprise2VO.getCostDto(),enterprise2VO.getEnterpriseKey());
+        enterpriseBusinessService.setSTATAC(enterprise2VO.getEnterpriseKey()
+                ,enterprise2VO.getSalesTaxpayer()
+                ,enterprise2VO.getAnnualTurnover()
+                ,enterprise2VO.getAnnualCost());
+        R r1 = enterpriseBusinessService.updateByEnterpriseKey(enterprise2VO.getEPBs(),enterprise2VO.getEnterpriseKey());
         //返回的r1与r2永远是success无需判断
         return R.SUCCESS();
     }
@@ -62,7 +64,7 @@ public class EnterpriseBusinessController {
     @GetMapping("getByKey")
     public R getData(String enterpriseKey){
         List<EnterpriseBusiness> EPBs = enterpriseBusinessService.getByEnterpriseKey(enterpriseKey);
-        List<Cost> costs = costService.getCosts(enterpriseKey);
+        List<CostDto> costs = costService.getCosts(enterpriseKey);
         Enterprise2VO enterprise2VO = enterpriseBusinessService.getDateIITable(enterpriseKey);
         return R.SUCCESS().data("enterpriseBusiness",EPBs)
                 .data("costs",costs)

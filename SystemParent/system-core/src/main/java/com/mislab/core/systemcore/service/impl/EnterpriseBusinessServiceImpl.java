@@ -2,6 +2,7 @@ package com.mislab.core.systemcore.service.impl;
 
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.pojo.dto.Enterprise2VO;
@@ -34,9 +35,9 @@ public class EnterpriseBusinessServiceImpl extends ServiceImpl<EnterpriseBusines
      * @return
      */
     @Override
-    public R updateByEnterpriseKey(List<EnterpriseBusiness> EPBs) {
-        for (EnterpriseBusiness enterpriseBusiness: EPBs) {
-            enterpriseBusinessMapper.updateByEnterpriseKey(enterpriseBusiness);
+    public R updateByEnterpriseKey(List<EnterpriseBusinessDTO> EPBs,String enterpriseKey) {
+        for (EnterpriseBusinessDTO enterpriseBusiness: EPBs) {
+            enterpriseBusinessMapper.updateByEnterpriseKey(enterpriseBusiness,enterpriseKey);
         }
         return R.SUCCESS();
     }
