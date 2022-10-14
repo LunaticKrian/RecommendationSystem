@@ -51,6 +51,10 @@ public enum ResponseEnum {
     WEIXIN_CALLBACK_PARAM_ERROR(-601, "回调参数不正确"),
     WEIXIN_FETCH_ACCESSTOKEN_ERROR(-602, "获取access_token失败"),
     WEIXIN_FETCH_USERINFO_ERROR(-603, "获取用户信息失败"),
+
+    //企业-员工信息异常
+    ENTERPRISE_NOMATCH_EMPLOYEE(-701,"企业与员工不匹配"),
+    ENTERPRISE_NOTFOUND(-702,"企业信息已经不存在")
     ;
 
     // 响应状态码：

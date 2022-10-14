@@ -2,7 +2,10 @@ package com.mislab.core.systemcore.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mislab.common.exception.Assert;
 import com.mislab.common.result.R;
+import com.mislab.common.result.ResponseEnum;
+import com.mislab.core.systemcore.common.enums.EnterpriseStateEnum;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author krian
@@ -38,12 +41,12 @@ public class EnterpriseController {
 
     @ApiOperation("保存/修改企业基本信息")
     @PostMapping("/saveEnterpriseMsg")
-    public R saveEnterpriseMsg(@RequestBody EnterpriseBasicMsgDto enterpriseBasicMsgDto){
+    public R saveEnterpriseMsg(@RequestBody EnterpriseBasicMsgDto enterpriseBasicMsgDto) {
         String enterpriseKey = enterpriseBasicMsgDto.getEnterpriseKey();
-        if(StringUtils.isEmpty(enterpriseKey)){
+        if (StringUtils.isEmpty(enterpriseKey)) {
             //新增企业基本信息
             return enterpriseService.saveEnterpriseMsg(enterpriseBasicMsgDto);
-        }else{
+        } else {
             //修改企业基本信息
             return enterpriseService.updateEnterpriseMsg(enterpriseBasicMsgDto);
         }
@@ -51,20 +54,20 @@ public class EnterpriseController {
 
     @ApiOperation("获取第一页面的企业基本信息")
     @GetMapping("/getEnterpriseMsgOfFirst")
-    public R getEnterpriseMsgOfFirst(@ApiParam("企业唯一标识码") String enterpriseKey,@ApiParam("员工编号") String uid){
+    public R getEnterpriseMsgOfFirst(@ApiParam("企业唯一标识码") String enterpriseKey, @ApiParam("员工编号") String uid) {
         //获取企业与员工的关联关系
         EmployeeEnterprise employeeEnterprise = employeeEnterpriseService.getOne(new LambdaQueryWrapper<EmployeeEnterprise>()
                 .eq(EmployeeEnterprise::getEnterpriseKey, enterpriseKey)
                 .eq(EmployeeEnterprise::getUid, uid));
         //如果没有关系，返回异常
-        if(employeeEnterprise == null){
-            return R.ERROR().message("该企业与员工没有对应关系");
-        }else {
-            //如果存在关系，但该企业已经被逻辑删除
-            Integer state = employeeEnterprise.getState();
-            if (state == 0) return R.ERROR().message("该企业信息已经不存在");
-        }
+        Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
+        //如果存在关系，但该企业信息已经不存在（被逻辑删除）
+        Integer state = employeeEnterprise.getState();
+        Assert.equals(state, EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
+
         return enterpriseService.getEnterpriseMsgOfFirst(enterpriseKey);
     }
 }
+
+
 
