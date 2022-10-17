@@ -37,7 +37,8 @@ public class EnterpriseBusinessServiceImpl extends ServiceImpl<EnterpriseBusines
     @Override
     public R updateByEnterpriseKey(List<EnterpriseBusinessDTO> EPBs,String enterpriseKey) {
         for (EnterpriseBusinessDTO enterpriseBusiness: EPBs) {
-            enterpriseBusinessMapper.updateByEnterpriseKey(enterpriseBusiness,enterpriseKey);
+            enterpriseBusiness.setEnterpriseKey(enterpriseKey);
+            enterpriseBusinessMapper.updateByEnterpriseKey(enterpriseBusiness);
         }
         return R.SUCCESS();
     }

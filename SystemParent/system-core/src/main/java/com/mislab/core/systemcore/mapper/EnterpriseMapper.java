@@ -19,7 +19,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface EnterpriseMapper extends BaseMapper<Enterprise> {
 
     //根据enterpriseKey放入costType
-    int updateCostType(String enterpriseKey, JSONArray costType);
+    int updateCostType(String enterpriseKey, String costType);
 
     String selectCostTypeByKey(String enterpriseKey);
 

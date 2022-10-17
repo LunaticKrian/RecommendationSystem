@@ -17,8 +17,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CostMapper extends BaseMapper<Cost> {
     //添加cost
-    int insertCost(CostDto cost,String costJson);
+    int insertCost(CostDto costDto,String name, String costJson);
     //修改cost
-    int updateCost(CostDto costDto, int costId);
+    int updateCost(String name,String costJson, int costId);
     //根据id获取cost（mp有自带）
 }

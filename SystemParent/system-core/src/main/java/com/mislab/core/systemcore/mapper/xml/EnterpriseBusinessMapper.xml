@@ -13,20 +13,21 @@
 
     <!--根据enterpriseKey放入数据-->
     <insert id="setByEnterpriseKey" useGeneratedKeys="true" keyProperty="id">
-        insert into enterprise_business(business_ratio,general_taxpayer_ratio,smallscale_taxpayer_ratio,smallscale_taxpayer_ratio,natural_person_ratio)
+        insert into enterprise_business(business_ratio,general_taxpayer_ratio,smallscale_taxpayer_ratio,natural_person_ratio)
         value (#{business_ratio},#{general_taxpayer_ratio},#{smallscale_taxpayer_ratio},#{smallscale_taxpayer_ratio},#{natural_person_ratio})
+        where enterprise_key = #{enterpriseKey}
     </insert>
 
     <!--  根据enterpriseKey获取相关信息  -->
     <select id="getByEnterpriseKey" resultMap="EnterpriseBusiness">
-        select business_ratio,general_taxpayer_ratio,smallscale_taxpayer_ratio,smallscale_taxpayer_ratio,natural_person_ratio from enterprise_business
+        select enterprise_key,business_ratio,general_taxpayer_ratio,smallscale_taxpayer_ratio,natural_person_ratio from enterprise_business
         where enterprise_key = #{enterpriseKey}
     </select>
 
     <!--    修改已有的enterprise数据-->
     <update id="updateByEnterpriseKey" parameterType="com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO">
         update enterprise_business
-        set
+        <set>
             <if test="businessRatio != null">
                 business_ratio = #{businessRatio},
             </if>
@@ -39,6 +40,7 @@
             <if test="naturalPersonRatio != null">
                 natural_person_ratio = #{naturalPersonRatio},
             </if>
+        </set>
         where enterprise_key = #{enterpriseKey}
     </update>
 </mapper>
