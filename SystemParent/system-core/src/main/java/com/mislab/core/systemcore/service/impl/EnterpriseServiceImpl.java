@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
+import com.mislab.core.systemcore.common.enums.TaxRateEnum;
 import com.mislab.core.systemcore.mapper.BusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
@@ -97,7 +98,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * @author ascend
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public R updateEnterpriseMsg(EnterpriseBasicMsgDto enterpriseBasicMsgDto) {
         String enterpriseKey = enterpriseBasicMsgDto.getEnterpriseKey();
         //直接从前端传入企业key,如果已存在于数据库中则为修改，反之为新增
@@ -131,7 +132,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * @author ascend
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public R getEnterpriseMsgOfFirst(String enterpriseKey) {
         //声明企业基本信息数据返回对象
         EnterpriseBasicMsgVo enterpriseBasicMsgVo = new EnterpriseBasicMsgVo();
@@ -155,34 +156,38 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         enterpriseBasicMsgVo.setInvestee(JSON.parseArray(enterprise.getInvestee()).toJavaList(Investee.class));
 
         //计算税率
-        List<Double> taxRateList = new ArrayList<>();
+        List<TaxRateEnum> taxList = new ArrayList<>();
         if(enterprise.getTaxpayerQualification() == 1){
             //小规模纳税人
             Integer invoiceType = enterprise.getInvoiceType();
             if (invoiceType == 0){
                 //专票
-                taxRateList.add(0.03);
+                taxList.add(TaxRateEnum.SMALLSCALE_SPECIALTICKET);
             }else if(invoiceType == 1){
                 //普票
-                taxRateList.add(0.00);
+                taxList.add(TaxRateEnum.SMALLSCALE_GENERALTICKET);
             }else if(invoiceType == 2){
                 //专票+普票
-                taxRateList.add(0.03);
-                taxRateList.add(0.00);
+                taxList.add(TaxRateEnum.SMALLSCALE_SPECIALTICKET);
+                taxList.add(TaxRateEnum.SMALLSCALE_GENERALTICKET);
             }
         }else{
             //一般纳税人
             for (String businessName : business_list){
                 //这里目前只能固定写
                 if (businessName.equals("运输服务")){
-                    taxRateList.add(0.09);
+                    taxList.add(TaxRateEnum.COMMONSCALE_TRANSSERVICE);
                 }else if (businessName.equals("车辆销售")){
-                    taxRateList.add(0.13);
+                    taxList.add(TaxRateEnum.COMMONSCALE_VEHICLESALES);
                 }else {
                     //其他主营业务,税率为6
-                    taxRateList.add(0.06);
+                    taxList.add(TaxRateEnum.COMMONSCALE_OTHERSBUSINESS);
                 }
             }
+        }
+        List<Double> taxRateList = new ArrayList<>();
+        for(TaxRateEnum taxRate : taxList){
+            taxRateList.add(taxRate.getTaxRate());
         }
         enterpriseBasicMsgVo.setTaxRate(taxRateList);
 
