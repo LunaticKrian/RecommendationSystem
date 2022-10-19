@@ -62,7 +62,7 @@ public class EnterpriseBusinessController {
      * @return
      */
     @GetMapping("getByKey")
-    public R getData(String enterpriseKey){
+    public R getData( String enterpriseKey){
         List<EnterpriseBusiness> EPBs = enterpriseBusinessService.getByEnterpriseKey(enterpriseKey);
         List<CostDto> costs = costService.getCosts(enterpriseKey);
         Enterprise2VO enterprise2VO = enterpriseBusinessService.getDateIITable(enterpriseKey);

@@ -8,13 +8,14 @@
         <result property="industryId" column="industry_id" jdbcType="INTEGER"/>
     </resultMap>
 
-    <insert id="insertCost" keyProperty="id" useGeneratedKeys="true">
-        insert into cost(id,name ,supplier_proportion,industry_id)
-        values (#{id},#{name},#{costJson},#{industryId})
+
+    <insert id="insertCost" keyProperty="costDto.id" useGeneratedKeys="true">
+        insert into cost(name ,supplier_proportion)
+        values (#{name},#{costJson})
     </insert>
-    <update id="updateCost" keyProperty="id" useGeneratedKeys="true">
+    <update id="updateCost">
         update cost
-        set name  = #{name},supplier_proportion=#{costJson},industry_id = #{industryId}
+        set name  = #{name},supplier_proportion=#{costJson}
         where id = #{costId}
     </update>
 </mapper>

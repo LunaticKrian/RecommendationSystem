@@ -32,6 +32,6 @@ public interface EnterpriseBusinessMapper extends BaseMapper<EnterpriseBusiness>
     /**
      * 修改已有的enterprise数据
      */
-    int updateByEnterpriseKey(EnterpriseBusinessDTO enterpriseBusinessDTO,String enterpriseKey);
+    int updateByEnterpriseKey(EnterpriseBusinessDTO enterpriseBusinessDTO);
 
 }
