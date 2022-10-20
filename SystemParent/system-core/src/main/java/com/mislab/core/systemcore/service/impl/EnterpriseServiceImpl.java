@@ -2,6 +2,7 @@ package com.mislab.core.systemcore.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.common.enums.TaxRateEnum;
@@ -9,6 +10,8 @@ import com.mislab.core.systemcore.mapper.BusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
+import com.mislab.core.systemcore.pojo.dto.RevenueRelatedDto;
 import com.mislab.core.systemcore.pojo.entity.Business;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
 import com.mislab.core.systemcore.pojo.entity.Enterprise;
@@ -194,6 +197,42 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         //复制企业的其他信息到enterpriseBasicMsgVo对象
         BeanUtils.copyProperties(enterprise,enterpriseBasicMsgVo);
         return R.SUCCESS().data("enterpriseBasicMsgVo",enterpriseBasicMsgVo);
+    }
+
+    /**
+     * 新增/修改企业经营情况
+     * @param enterpriseOperationalMsgDto
+     * @return
+     * @author ascend
+     */
+    @Override
+    public R saveEnterpriseOperationalMsg(EnterpriseOperationalMsgDto enterpriseOperationalMsgDto) {
+        //获取企业信息
+        Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
+                .eq(Enterprise::getEnterpriseKey, enterpriseOperationalMsgDto.getEnterpriseKey()));
+        //设置是否兼营销售纳税人
+        enterprise.setSalesTaxpayer(enterprise.getSalesTaxpayer());
+        //设置年营业额
+        enterprise.setAnnualTurnover(enterpriseOperationalMsgDto.getAnnualTurnover());
+        //设置年经营成本
+        enterprise.setAnnualCost(enterpriseOperationalMsgDto.getAnnualCost());
+        //存放企业-业务数据到enterprise_business表中
+        //存放之前应该先删除以前的数据
+        List<RevenueRelatedDto> revenueRelateList = enterpriseOperationalMsgDto.getRevenueRelateList();
+        for (RevenueRelatedDto  revenueRelate : revenueRelateList){
+            Business business = businessMapper.selectOne(new LambdaQueryWrapper<Business>()
+                    .eq(Business::getName, revenueRelate.getBusinessName()));
+            EnterpriseBusiness enterpriseBusiness = EnterpriseBusiness.builder()
+                    .businessRatio(revenueRelate.getBusinessRatio())
+                    .generalTaxpayerRatio(revenueRelate.getGeneralTaxpayerRatio())
+                    .smallscaleTaxpayerRatio(revenueRelate.getSmallscaleTaxpayerRatio())
+                    .naturalPersonRatio(revenueRelate.getNaturalPersonRatio()).build();
+            enterpriseBusinessMapper.update(enterpriseBusiness,new LambdaUpdateWrapper<EnterpriseBusiness>()
+                    .eq(EnterpriseBusiness::getEnterpriseKey,enterpriseOperationalMsgDto.getEnterpriseKey())
+                    .eq(EnterpriseBusiness::getBusinessId,business.getId()));
+        }
+
+        return R.SUCCESS();
     }
 
 }

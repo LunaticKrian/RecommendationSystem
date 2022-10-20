@@ -7,7 +7,9 @@ import com.mislab.common.result.R;
 import com.mislab.common.result.ResponseEnum;
 import com.mislab.core.systemcore.common.enums.EnterpriseStateEnum;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
+import com.mislab.core.systemcore.pojo.entity.Enterprise;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import io.swagger.annotations.Api;
@@ -70,8 +72,12 @@ public class EnterpriseController {
 
     @ApiOperation("保存/修改企业经营情况的信息")
     @PostMapping("/saveEnterpriseOperationalMsg")
-    public R saveEnterpriseOperationalMsg(@RequestBody EnterpriseBasicMsgDto enterpriseBasicMsgDto) {
-        return R.SUCCESS();
+    public R saveEnterpriseOperationalMsg(@RequestBody EnterpriseOperationalMsgDto enterpriseOperationalMsgDto) {
+        Enterprise enterprise = enterpriseService.getOne(new LambdaQueryWrapper<Enterprise>()
+                .eq(Enterprise::getEnterpriseKey, enterpriseOperationalMsgDto.getEnterpriseKey()));
+        //如果enterpriseKey为null，返回企业信息未找到异常
+        Assert.notNull(enterprise.getEnterpriseKey(), ResponseEnum.ENTERPRISE_NOTFOUND);
+        return enterpriseService.saveEnterpriseOperationalMsg(enterpriseOperationalMsgDto);
     }
 
     @ApiOperation("获取第二页面的企业经营情况信息")

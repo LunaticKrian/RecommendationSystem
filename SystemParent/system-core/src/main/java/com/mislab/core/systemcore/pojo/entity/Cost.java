@@ -2,11 +2,12 @@ package com.mislab.core.systemcore.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -28,6 +29,9 @@ public class Cost implements Serializable {
 
     @ApiModelProperty(value = "成本费用类别")
     private String name;
+
+    @ApiModelProperty(value = "成本占比")
+    private Double costRatio;
 
     @ApiModelProperty(value = "供应商资质,包含供应商类别id和比例[{\"supId\" : 1,\"proportion\":0.5},{\"supId\" : 2,\"proportion\":0.3},{\"supId\" : 3,\"proportion\":0.2}]")
     private String supplierProportion;

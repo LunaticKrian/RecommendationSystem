@@ -39,8 +39,8 @@ public class EnterpriseBusiness implements Serializable {
     @ApiModelProperty(value = "占比")
     private Double businessRatio;
 
-    @ApiModelProperty(value = "单项金额")
-    private Double amount;
+/*    @ApiModelProperty(value = "单项金额")
+    private Double amount;*/
 
     @ApiModelProperty(value = "一般纳税人")
     private Double generalTaxpayerRatio;
