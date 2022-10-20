@@ -67,6 +67,18 @@ public class EnterpriseController {
 
         return enterpriseService.getEnterpriseMsgOfFirst(enterpriseKey);
     }
+
+    @ApiOperation("保存/修改企业经营情况的信息")
+    @PostMapping("/saveEnterpriseOperationalMsg")
+    public R saveEnterpriseOperationalMsg(@RequestBody EnterpriseBasicMsgDto enterpriseBasicMsgDto) {
+        return R.SUCCESS();
+    }
+
+    @ApiOperation("获取第二页面的企业经营情况信息")
+    @GetMapping("/getEnterpriseMsgOfSecond")
+    public R getEnterpriseMsgOfSecond(@ApiParam("企业唯一标识码") String enterpriseKey, @ApiParam("员工编号") String uid) {
+        return R.SUCCESS();
+    }
 }
 
 
