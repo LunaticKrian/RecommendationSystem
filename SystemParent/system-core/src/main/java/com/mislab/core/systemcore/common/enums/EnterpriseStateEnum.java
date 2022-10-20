@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
+ * 企业状态信息枚举
  * @author Ascendable
  * @since 2022/10/14
  */
