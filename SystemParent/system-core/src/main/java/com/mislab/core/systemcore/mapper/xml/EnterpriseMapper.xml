@@ -31,6 +31,7 @@
         <result property="salesTaxpayer" column="sales_taxpayer" jdbcType="TINYINT"/>
         <result property="annualTurnover" column="annual_turnover" jdbcType="DOUBLE"/>
         <result property="annualCost" column="annual_cost" jdbcType="DOUBLE"/>
+        <result property="enterpriseKey" column="enterprise_key" jdbcType="VARCHAR"/>
     </resultMap>
 
     <update id="updateCostType" >
@@ -61,7 +62,7 @@
     </select>
 
     <select id="selectDateIITable" resultMap="enterprise2">
-        select annual_turnover,annual_cost,sales_taxpayer
+        select annual_turnover,annual_cost,sales_taxpayer,enterprise_key
         from enterprise
         where enterprise_key = #{enterpriseKey} ;
     </select>

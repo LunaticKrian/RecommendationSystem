@@ -61,14 +61,14 @@ public class EnterpriseBusinessController {
      * @param enterpriseKey
      * @return
      */
-    @GetMapping("getByKey")
-    public R getData( String enterpriseKey){
+    @GetMapping("getByKey/{enterpriseKey}")
+    public R getData(@PathVariable(value = "enterpriseKey") String enterpriseKey){
         List<EnterpriseBusiness> EPBs = enterpriseBusinessService.getByEnterpriseKey(enterpriseKey);
         List<CostDto> costs = costService.getCosts(enterpriseKey);
         Enterprise2VO enterprise2VO = enterpriseBusinessService.getDateIITable(enterpriseKey);
         return R.SUCCESS().data("enterpriseBusiness",EPBs)
                 .data("costs",costs)
-                .data("date",enterprise2VO);
+                .data("occupation",enterprise2VO);
     }
 }
 
