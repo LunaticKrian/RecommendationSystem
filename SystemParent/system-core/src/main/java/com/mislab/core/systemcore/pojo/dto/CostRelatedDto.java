@@ -28,4 +28,6 @@ public class CostRelatedDto {
     @ApiModelProperty(value = "供应商资质信息")
     private List<SupplierProportion> supplierProportions;
 
+    @ApiModelProperty(value = "行业id")
+    private Integer industryId;
 }

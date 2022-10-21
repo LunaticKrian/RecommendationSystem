@@ -1,21 +1,21 @@
 package com.mislab.core.systemcore.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.common.enums.TaxRateEnum;
 import com.mislab.core.systemcore.mapper.BusinessMapper;
+import com.mislab.core.systemcore.mapper.CostMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.mapper.EnterpriseMapper;
+import com.mislab.core.systemcore.pojo.dto.CostRelatedDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
 import com.mislab.core.systemcore.pojo.dto.RevenueRelatedDto;
-import com.mislab.core.systemcore.pojo.entity.Business;
-import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
-import com.mislab.core.systemcore.pojo.entity.Enterprise;
-import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
+import com.mislab.core.systemcore.pojo.entity.*;
 import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
 import com.mislab.core.systemcore.pojo.jsonDomain.ShareholderInfo;
 import com.mislab.core.systemcore.pojo.vo.EnterpriseBasicMsgVo;
@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,9 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
 
     @Autowired
     private EnterpriseMapper enterpriseMapper;
+
+    @Autowired
+    private CostMapper costMapper;
 
     /**
      * 保存企业信息
@@ -206,6 +210,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * @author ascend
      */
     @Override
+    @Transactional
     public R saveEnterpriseOperationalMsg(EnterpriseOperationalMsgDto enterpriseOperationalMsgDto) {
         //获取企业信息
         Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
@@ -220,19 +225,46 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         //存放之前应该先删除以前的数据
         List<RevenueRelatedDto> revenueRelateList = enterpriseOperationalMsgDto.getRevenueRelateList();
         for (RevenueRelatedDto  revenueRelate : revenueRelateList){
+            //获取业务对象
             Business business = businessMapper.selectOne(new LambdaQueryWrapper<Business>()
                     .eq(Business::getName, revenueRelate.getBusinessName()));
+            //存放业务-企业关联信息,这里不用先删除后新增，直接执行update操作即可
             EnterpriseBusiness enterpriseBusiness = EnterpriseBusiness.builder()
+                    .enterpriseKey(enterpriseOperationalMsgDto.getEnterpriseKey())
+                    .businessId(business.getId())
                     .businessRatio(revenueRelate.getBusinessRatio())
                     .generalTaxpayerRatio(revenueRelate.getGeneralTaxpayerRatio())
                     .smallscaleTaxpayerRatio(revenueRelate.getSmallscaleTaxpayerRatio())
                     .naturalPersonRatio(revenueRelate.getNaturalPersonRatio()).build();
+            //执行更新操作
             enterpriseBusinessMapper.update(enterpriseBusiness,new LambdaUpdateWrapper<EnterpriseBusiness>()
                     .eq(EnterpriseBusiness::getEnterpriseKey,enterpriseOperationalMsgDto.getEnterpriseKey())
                     .eq(EnterpriseBusiness::getBusinessId,business.getId()));
         }
 
-        return R.SUCCESS();
+        //存放成本相关信息到cost表中,如果之前有企业已经有cost_type消息，那么应该先删除之前的，防止后期数据库数据量过多
+        String costType = enterprise.getCostType();
+        if (!StringUtils.isEmpty(costType)){
+            List<Integer> costTypeList = JSONArray.parseArray(costType).toJavaList(Integer.class);
+            costMapper.deleteBatchIds(costTypeList);
+        }
+        //执行cost新增操作
+        List<CostRelatedDto> costRelatedList = enterpriseOperationalMsgDto.getCostRelatedList();
+        //存放cost_id到enterprise表中
+        List<Integer> costTypeRes = new ArrayList<>();
+        for (CostRelatedDto costRelated : costRelatedList){
+            Cost cost = Cost.builder()
+                    .name(costRelated.getName())
+                    .costRatio(costRelated.getCostRatio())
+                    .supplierProportion(JSON.toJSONString(costRelated.getSupplierProportions()))
+                    .industryId(costRelated.getIndustryId()).build();
+            costMapper.insert(cost);
+            costTypeRes.add(cost.getId());
+        }
+        enterprise.setCostType(JSON.toJSONString(costTypeRes));
+        //保存enterprise数据
+        this.save(enterprise);
+        return R.SUCCESS().message("保存企业信息成功");
     }
 
 }
