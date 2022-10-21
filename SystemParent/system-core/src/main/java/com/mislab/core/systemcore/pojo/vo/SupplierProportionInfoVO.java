@@ -17,6 +17,9 @@ public class SupplierProportionInfoVO {
     // 供应商类别：
     private String name;
 
+    // 供应商占比：
+    private double percentage;
+
     // 税率信息：
     private double taxRate;
 

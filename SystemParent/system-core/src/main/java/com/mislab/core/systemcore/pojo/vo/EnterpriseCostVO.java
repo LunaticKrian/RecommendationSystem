@@ -18,5 +18,4 @@ public class EnterpriseCostVO {
 
     // 企业对应的成本花费信息：
     private List<CostInfoVO> costInfoVOList;
-
 }

@@ -15,12 +15,12 @@ public class EnterpriseBusinessTaxVO {
     // 业务名称：
     private String businessName;
 
-    // 业务信息：
-    private EnterpriseBusiness enterpriseBusiness;
-
     // 业务收入：
     private Double amount;
 
     // 业务税率：
     private TaxRate taxRate;
+
+    // 业务信息：
+    private EnterpriseBusiness enterpriseBusiness;
 }

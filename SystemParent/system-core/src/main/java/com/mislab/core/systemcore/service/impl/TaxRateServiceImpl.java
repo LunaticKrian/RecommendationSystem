@@ -1,6 +1,5 @@
 package com.mislab.core.systemcore.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.utils.TimeUtils;
 import com.mislab.core.systemcore.mapper.TaxRateMapper;
@@ -11,13 +10,11 @@ import com.mislab.core.systemcore.service.EnterpriseBusinessService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import com.mislab.core.systemcore.service.TaxRateService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -145,64 +142,127 @@ public class TaxRateServiceImpl extends ServiceImpl<TaxRateMapper, TaxRate> impl
 
 
     // TODO:3、计算“增值税进项税额”:
-    public Map<Object, Object> VATInputTax(EnterpriseCostVO enterpriseCostVO) {
+    public Map<String, Double> VATInputTax(EnterpriseCostVO enterpriseCostVO) {
+        // 创建一个Map存放计算信息：
+        HashMap<String, Double> resultDetail = new HashMap<>();
+
         // 遍历，获取所有的成本信息：
         List<CostInfoVO> costInfoList = enterpriseCostVO.getCostInfoVOList();
+
+        // 计算所有成本项目总和：
+        double sum = 0.0;
         for (CostInfoVO item : costInfoList) {
-            switch (item.getId()) {
-                case 1:
-                    double result = CalculateVehicleCost(item);
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-            }
+            sum += CalculateCost(item);
+            resultDetail.put(item.getCostName(), sum);
         }
-        return null;
+        return resultDetail;
     }
 
-    // TODO: 计算车辆成本：
-    private double CalculateVehicleCost(CostInfoVO item) {
+    // TODO: 计算成本：
+    private double CalculateCost(CostInfoVO item) {
         // 获取所有的供应商资质：
         List<SupplierProportionInfoVO> supplierProportionInfoVOS = item.getList();
-        for (SupplierProportionInfoVO ProportionInfo : supplierProportionInfoVOS) {
-            switch (ProportionInfo.getId()) {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    break;
-                case 8:
-                    break;
-                case 9:
-                    break;
-                default:
-                    // 报出异常
-            }
+        // 获取当前成本金额：
+        double amount = item.getAmount();
+        // 总增值税进项税额：
+        double result = 0.0;
+        // 计算供应商资质下对应的增值税进项税额：
+        for (SupplierProportionInfoVO proportionInfo : supplierProportionInfoVOS) {
+            // 当前纳税人所占比例：
+            double percentage = proportionInfo.getPercentage();
+            // 获取当前纳税人的税率信息：
+            double taxRate = proportionInfo.getTaxRate();
+            // 计算：(各进项含税营业额*供应商资质中纳税人的比例)/(1+对应增值税税率)*对应增值税税率
+            result += (amount * percentage) / (1 + taxRate) * taxRate;
         }
-        return 0.0;
+        return result;
     }
 
-    // TODO：计算人工成本：
 
-    // TODO：计算办公成本：
+    @Test
+    public void testVATInputTax(){
+        EnterpriseCostVO enterpriseCostVO = new EnterpriseCostVO();
 
-    // TODO：计算运输（油费）成本：
+        CostInfoVO costInfoVO1 = new CostInfoVO();
+        costInfoVO1.setCostName("车辆成本");
+        costInfoVO1.setAmount(100);
 
-    // TODO：计算运输（路桥费）成本
+        CostInfoVO costInfoVO2 = new CostInfoVO();
+        costInfoVO2.setCostName("人工成本");
+        costInfoVO2.setAmount(100);
 
+        CostInfoVO costInfoVO3 = new CostInfoVO();
+        costInfoVO3.setCostName("办公成本");
+        costInfoVO3.setAmount(100);
+
+        CostInfoVO costInfoVO4 = new CostInfoVO();
+        costInfoVO4.setCostName("运输成本(油费）");
+        costInfoVO4.setAmount(100);
+
+        CostInfoVO costInfoVO5 = new CostInfoVO();
+        costInfoVO5.setCostName("运输成本(路桥费)");
+        costInfoVO5.setAmount(100);
+
+        ArrayList<CostInfoVO> costInfoVoList = new ArrayList<>();
+
+        costInfoVoList.add(costInfoVO1);
+        costInfoVoList.add(costInfoVO2);
+        costInfoVoList.add(costInfoVO3);
+        costInfoVoList.add(costInfoVO4);
+        costInfoVoList.add(costInfoVO5);
+
+        SupplierProportionInfoVO supplierProportionInfoVO1 = new SupplierProportionInfoVO();
+        supplierProportionInfoVO1.setName("一般纳税人(新车)");
+        supplierProportionInfoVO1.setPercentage(0.3);
+        supplierProportionInfoVO1.setTaxRate(0.13);
+
+        SupplierProportionInfoVO supplierProportionInfoVO2 = new SupplierProportionInfoVO();
+        supplierProportionInfoVO2.setName("一般纳税人(新车)");
+        supplierProportionInfoVO2.setPercentage(0.3);
+        supplierProportionInfoVO2.setTaxRate(0.13);
+
+        SupplierProportionInfoVO supplierProportionInfoVO3 = new SupplierProportionInfoVO();
+        supplierProportionInfoVO3.setName("一般纳税人(新车)");
+        supplierProportionInfoVO3.setPercentage(0.3);
+        supplierProportionInfoVO3.setTaxRate(0.13);
+
+        SupplierProportionInfoVO supplierProportionInfoVO4 = new SupplierProportionInfoVO();
+        supplierProportionInfoVO4.setName("一般纳税人(新车)");
+        supplierProportionInfoVO4.setPercentage(0.3);
+        supplierProportionInfoVO4.setTaxRate(0.13);
+
+        SupplierProportionInfoVO supplierProportionInfoVO5 = new SupplierProportionInfoVO();
+        supplierProportionInfoVO5.setName("一般纳税人(新车)");
+        supplierProportionInfoVO5.setPercentage(0.3);
+        supplierProportionInfoVO5.setTaxRate(0.13);
+
+        ArrayList<SupplierProportionInfoVO> supplierProportionInfoVOList = new ArrayList<>();
+
+        supplierProportionInfoVOList.add(supplierProportionInfoVO1);
+        supplierProportionInfoVOList.add(supplierProportionInfoVO2);
+        supplierProportionInfoVOList.add(supplierProportionInfoVO3);
+        supplierProportionInfoVOList.add(supplierProportionInfoVO4);
+        supplierProportionInfoVOList.add(supplierProportionInfoVO5);
+
+        costInfoVO1.setList(supplierProportionInfoVOList);
+        costInfoVO2.setList(supplierProportionInfoVOList);
+        costInfoVO3.setList(supplierProportionInfoVOList);
+        costInfoVO4.setList(supplierProportionInfoVOList);
+        costInfoVO5.setList(supplierProportionInfoVOList);
+
+        enterpriseCostVO.setCostInfoVOList(costInfoVoList);
+
+        // 调用方法：
+        Map<String, Double> stringDoubleMap = VATInputTax(enterpriseCostVO);
+
+        // 输出结果：
+        for (Map.Entry<String, Double> entry : stringDoubleMap.entrySet()) {
+            String key = entry.getKey();
+            Double value = entry.getValue();
+            System.out.println(key + ":" + value);
+        }
+    }
 }
+
+
+
