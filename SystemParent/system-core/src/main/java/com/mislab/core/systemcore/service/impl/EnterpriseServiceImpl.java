@@ -216,7 +216,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
                 .eq(Enterprise::getEnterpriseKey, enterpriseOperationalMsgDto.getEnterpriseKey()));
         //设置是否兼营销售纳税人
-        enterprise.setSalesTaxpayer(enterprise.getSalesTaxpayer());
+        enterprise.setSalesTaxpayer(enterpriseOperationalMsgDto.getSalesTaxpayer());
         //设置年营业额
         enterprise.setAnnualTurnover(enterpriseOperationalMsgDto.getAnnualTurnover());
         //设置年经营成本
@@ -263,7 +263,8 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         }
         enterprise.setCostType(JSON.toJSONString(costTypeRes));
         //保存enterprise数据
-        this.save(enterprise);
+        this.update(enterprise,new LambdaQueryWrapper<Enterprise>()
+                .eq(Enterprise::getEnterpriseKey,enterpriseOperationalMsgDto.getEnterpriseKey()));
         return R.SUCCESS().message("保存企业信息成功");
     }
 
