@@ -83,7 +83,14 @@ public class EnterpriseController {
     @ApiOperation("获取第二页面的企业经营情况信息")
     @GetMapping("/getEnterpriseMsgOfSecond")
     public R getEnterpriseMsgOfSecond(@ApiParam("企业唯一标识码") String enterpriseKey, @ApiParam("员工编号") String uid) {
-        return R.SUCCESS();
+
+        EmployeeEnterprise employeeEnterprise = employeeEnterpriseService.getOne(new LambdaQueryWrapper<EmployeeEnterprise>()
+                .eq(EmployeeEnterprise::getEnterpriseKey, enterpriseKey)
+                .eq(EmployeeEnterprise::getUid, uid));
+        Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
+        Assert.equals(employeeEnterprise.getState(), EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
+
+        return enterpriseService.getEnterpriseMsgOfSecond(enterpriseKey);
     }
 }
 

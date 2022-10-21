@@ -267,4 +267,21 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         return R.SUCCESS().message("保存企业信息成功");
     }
 
+
+    /**
+     * 获取第一页面的企业基本信息
+     * @param enterpriseKey
+     * @return
+     * @author ascend
+     */
+    @Override
+    @Transactional
+    public R getEnterpriseMsgOfSecond(String enterpriseKey) {
+        //获取enterprise对象
+        Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
+                .eq(Enterprise::getEnterpriseKey, enterpriseKey));
+        //
+        return R.SUCCESS();
+    }
+
 }
