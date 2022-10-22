@@ -19,6 +19,7 @@ import com.mislab.core.systemcore.pojo.jsonDomain.SupplierProportion;
 import com.mislab.core.systemcore.pojo.vo.*;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
 import com.mislab.core.systemcore.service.EnterpriseService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
  * @since 2022-09-30
  */
 @Service
+@Slf4j
 public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterprise> implements EnterpriseService {
 
     @Autowired
@@ -55,6 +57,9 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
 
     @Autowired
     private CostMapper costMapper;
+
+    @Autowired
+    private IndustryMapper industryMapper;
 
     /**
      * 保存企业信息
@@ -138,7 +143,6 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * @author ascend
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public R getEnterpriseMsgOfFirst(String enterpriseKey) {
         //声明企业基本信息数据返回对象
         EnterpriseBasicMsgVo enterpriseBasicMsgVo = new EnterpriseBasicMsgVo();
@@ -209,7 +213,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
      * @author ascend
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public R saveEnterpriseOperationalMsg(EnterpriseOperationalMsgDto enterpriseOperationalMsgDto) {
         //获取企业信息
         Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
@@ -341,10 +345,12 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
                     .eq(Enterprise::getIndustryId,industryId));
             EnterpriseProjectVo enterpriseProjectVo = new EnterpriseProjectVo();
             BeanUtils.copyProperties(enterprise,enterpriseProjectVo);
-            //设置完成/保存时间、备注、状态
-            enterpriseProjectVo.setUpdateTime(employeeEnterprise.getUpdateTime());
+            //设置完成/保存时间、备注、状态、行业名称
+            enterpriseProjectVo.setUpdateOrCompletedTime(employeeEnterprise.getUpdateTime());
             enterpriseProjectVo.setNote("暂无备注");
             enterpriseProjectVo.setState(employeeEnterprise.getState());
+            enterpriseProjectVo.setIndustryName(industryMapper.selectOne(new LambdaQueryWrapper<Industry>()
+                    .eq(Industry::getId,industryId)).getIndustryName());
             //存入集合中
             enterpriseProjectVoList.add(enterpriseProjectVo);
         }
@@ -358,6 +364,5 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         }
         return R.SUCCESS().data("enterpriseList",res);
     }
-
 
 }
