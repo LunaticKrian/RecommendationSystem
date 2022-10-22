@@ -322,6 +322,10 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
             Double businessRatio = enterpriseBusiness.getBusinessRatio();
             revenueVo.setAmount(enterprise.getAnnualTurnover()*businessRatio/100);
             revenueVoList.add(revenueVo);
+            //赋值每个业务对应的名称
+            revenueVo.setBusinessName(businessMapper.selectOne(new LambdaQueryWrapper<Business>()
+                    .eq(Business::getId,enterpriseBusiness.getBusinessId()))
+                    .getName());
         }
         enterpriseOperationalMsgVo.setRevenueVoList(revenueVoList);
 
