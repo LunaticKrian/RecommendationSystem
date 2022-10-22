@@ -314,7 +314,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         List<RevenueVo> revenueVoList = new ArrayList<>();
         //获取企业对应的业务信息
         List<EnterpriseBusiness> enterpriseBusinesses = enterpriseBusinessMapper.selectList(new LambdaQueryWrapper<EnterpriseBusiness>()
-                .eq(EnterpriseBusiness::getEnterpriseKey, enterprise));
+                .eq(EnterpriseBusiness::getEnterpriseKey,enterpriseKey));
         for (EnterpriseBusiness enterpriseBusiness : enterpriseBusinesses){
             RevenueVo revenueVo = new RevenueVo();
             BeanUtils.copyProperties(enterpriseBusiness,revenueVo);

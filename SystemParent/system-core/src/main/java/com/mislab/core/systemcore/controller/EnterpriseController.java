@@ -65,7 +65,7 @@ public class EnterpriseController {
         Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
         //如果存在关系，但该企业信息已经不存在（被逻辑删除）
         Integer state = employeeEnterprise.getState();
-        Assert.equals(state, EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
+        Assert.notEquals(state, EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
 
         return enterpriseService.getEnterpriseMsgOfFirst(enterpriseKey);
     }
@@ -88,7 +88,7 @@ public class EnterpriseController {
                 .eq(EmployeeEnterprise::getEnterpriseKey, enterpriseKey)
                 .eq(EmployeeEnterprise::getUid, uid));
         Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
-        Assert.equals(employeeEnterprise.getState(), EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
+        Assert.notEquals(employeeEnterprise.getState(), EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
 
         return enterpriseService.getEnterpriseMsgOfSecond(enterpriseKey);
     }
