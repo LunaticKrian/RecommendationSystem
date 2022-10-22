@@ -18,7 +18,11 @@ import com.mislab.core.systemcore.pojo.dto.RevenueRelatedDto;
 import com.mislab.core.systemcore.pojo.entity.*;
 import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
 import com.mislab.core.systemcore.pojo.jsonDomain.ShareholderInfo;
+import com.mislab.core.systemcore.pojo.jsonDomain.SupplierProportion;
+import com.mislab.core.systemcore.pojo.vo.CostVo;
 import com.mislab.core.systemcore.pojo.vo.EnterpriseBasicMsgVo;
+import com.mislab.core.systemcore.pojo.vo.EnterpriseOperationalMsgVo;
+import com.mislab.core.systemcore.pojo.vo.RevenueVo;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import org.springframework.beans.BeanUtils;
@@ -278,11 +282,50 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
     @Override
     @Transactional
     public R getEnterpriseMsgOfSecond(String enterpriseKey) {
-        //获取enterprise对象
-        Enterprise enterprise = this.getOne(new LambdaQueryWrapper<Enterprise>()
+        //声明企业基本信息数据返回对象
+        EnterpriseOperationalMsgVo enterpriseOperationalMsgVo = new EnterpriseOperationalMsgVo();
+        //通过企业唯一标识码获取数据库中的企业信息
+        Enterprise enterprise = enterpriseMapper.selectOne(new LambdaQueryWrapper<Enterprise>()
                 .eq(Enterprise::getEnterpriseKey, enterpriseKey));
-        //
-        return R.SUCCESS();
+        //复制除成本相关、收入相关之外的其他属性
+        BeanUtils.copyProperties(enterprise,enterpriseOperationalMsgVo);
+
+        //封装成本信息
+        List<CostVo> costVoList = new ArrayList<>();
+        List<Integer> costIds = JSONArray.parseArray(enterprise.getCostType()).toJavaList(Integer.class);
+        for (Integer costId : costIds){
+            //根据cost_id获取cost对象
+            Cost cost = costMapper.selectOne(new LambdaQueryWrapper<Cost>().eq(Cost::getId, costId));
+            //获取供应商资质信息
+            List<SupplierProportion> supplierQualifications = JSONArray.parseArray(cost.getSupplierProportion())
+                    .toJavaList(SupplierProportion.class);
+            CostVo costVo = CostVo.builder()
+                    .name(cost.getName())
+                    .supplierProportions(supplierQualifications)
+                    .CostRatio(cost.getCostRatio()).build();
+            //赋值每个成本类别对应的金额
+            Double costRatio = cost.getCostRatio();
+            costVo.setAmount(enterprise.getAnnualCost()*costRatio/100);
+            costVoList.add(costVo);
+        }
+        enterpriseOperationalMsgVo.setCostVoList(costVoList);
+
+        //封装收入信息
+        List<RevenueVo> revenueVoList = new ArrayList<>();
+        //获取企业对应的业务信息
+        List<EnterpriseBusiness> enterpriseBusinesses = enterpriseBusinessMapper.selectList(new LambdaQueryWrapper<EnterpriseBusiness>()
+                .eq(EnterpriseBusiness::getEnterpriseKey, enterprise));
+        for (EnterpriseBusiness enterpriseBusiness : enterpriseBusinesses){
+            RevenueVo revenueVo = new RevenueVo();
+            BeanUtils.copyProperties(enterpriseBusiness,revenueVo);
+            //赋值每个业务对应的金额
+            Double businessRatio = enterpriseBusiness.getBusinessRatio();
+            revenueVo.setAmount(enterprise.getAnnualTurnover()*businessRatio/100);
+            revenueVoList.add(revenueVo);
+        }
+        enterpriseOperationalMsgVo.setRevenueVoList(revenueVoList);
+
+        return R.SUCCESS().data("enterpriseOperationalMsgVo",enterpriseOperationalMsgVo);
     }
 
 }
