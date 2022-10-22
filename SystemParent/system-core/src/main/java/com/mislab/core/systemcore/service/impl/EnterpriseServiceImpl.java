@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.common.enums.TaxRateEnum;
-import com.mislab.core.systemcore.mapper.BusinessMapper;
-import com.mislab.core.systemcore.mapper.CostMapper;
-import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
-import com.mislab.core.systemcore.mapper.EnterpriseMapper;
+import com.mislab.core.systemcore.mapper.*;
 import com.mislab.core.systemcore.pojo.dto.CostRelatedDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
@@ -19,10 +16,7 @@ import com.mislab.core.systemcore.pojo.entity.*;
 import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
 import com.mislab.core.systemcore.pojo.jsonDomain.ShareholderInfo;
 import com.mislab.core.systemcore.pojo.jsonDomain.SupplierProportion;
-import com.mislab.core.systemcore.pojo.vo.CostVo;
-import com.mislab.core.systemcore.pojo.vo.EnterpriseBasicMsgVo;
-import com.mislab.core.systemcore.pojo.vo.EnterpriseOperationalMsgVo;
-import com.mislab.core.systemcore.pojo.vo.RevenueVo;
+import com.mislab.core.systemcore.pojo.vo.*;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +28,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -331,5 +326,38 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
 
         return R.SUCCESS().data("enterpriseOperationalMsgVo",enterpriseOperationalMsgVo);
     }
+
+    @Override
+    public R getEnterpriseList(Integer industryId, String uid, Integer state) {
+        //根据uid查询其企业
+        List<EmployeeEnterprise> employeeEnterpriseList = employeeEnterpriseService.list(new LambdaQueryWrapper<EmployeeEnterprise>()
+                .eq(EmployeeEnterprise::getUid, uid));
+        //封装企业信息集合
+        List<EnterpriseProjectVo> enterpriseProjectVoList = new ArrayList<>();
+        //找到该行业对应的企业
+        for (EmployeeEnterprise employeeEnterprise : employeeEnterpriseList){
+            Enterprise enterprise = enterpriseMapper.selectOne(new LambdaQueryWrapper<Enterprise>()
+                    .eq(Enterprise::getEnterpriseKey, employeeEnterprise.getEnterpriseKey())
+                    .eq(Enterprise::getIndustryId,industryId));
+            EnterpriseProjectVo enterpriseProjectVo = new EnterpriseProjectVo();
+            BeanUtils.copyProperties(enterprise,enterpriseProjectVo);
+            //设置完成/保存时间、备注、状态
+            enterpriseProjectVo.setUpdateTime(employeeEnterprise.getUpdateTime());
+            enterpriseProjectVo.setNote("暂无备注");
+            enterpriseProjectVo.setState(employeeEnterprise.getState());
+            //存入集合中
+            enterpriseProjectVoList.add(enterpriseProjectVo);
+        }
+        //封装结果集
+        List<EnterpriseProjectVo> res = null;
+        if (state == null){
+            //表示返回已完成和待完成的企业
+            res = enterpriseProjectVoList.stream().filter(o->o.getState().equals(1)||o.getState().equals(2)).collect(Collectors.toList());
+        }else {
+            res = enterpriseProjectVoList.stream().filter(o->o.getState().equals(state)).collect(Collectors.toList());
+        }
+        return R.SUCCESS().data("enterpriseList",res);
+    }
+
 
 }

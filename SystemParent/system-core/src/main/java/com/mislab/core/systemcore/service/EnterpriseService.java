@@ -30,4 +30,7 @@ public interface EnterpriseService extends IService<Enterprise> {
     R saveEnterpriseOperationalMsg(EnterpriseOperationalMsgDto enterpriseOperationalMsgDto);
 
     R getEnterpriseMsgOfSecond(String enterpriseKey);
+
+    R getEnterpriseList(Integer industryId, String uid, Integer state);
+
 }

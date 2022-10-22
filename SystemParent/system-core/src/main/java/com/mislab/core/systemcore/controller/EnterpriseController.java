@@ -92,6 +92,14 @@ public class EnterpriseController {
 
         return enterpriseService.getEnterpriseMsgOfSecond(enterpriseKey);
     }
+
+    @ApiOperation("获取员工管理的不同状态的企业")
+    @GetMapping("/getEnterpriseListByState/{industryId}/{uid}/{state}")
+    public R getEnterpriseListByState(@ApiParam("行业id") @PathVariable("industryId") Integer industryId,
+                                      @ApiParam("员工编号") @PathVariable("uid") String uid,
+                                      @ApiParam("状态码") @PathVariable("state") Integer state){
+       return enterpriseService.getEnterpriseList(industryId,uid,state);
+    }
 }
 
 
