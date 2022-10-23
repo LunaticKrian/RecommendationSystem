@@ -85,7 +85,8 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         EmployeeEnterprise employeeEnterprise = EmployeeEnterprise.builder()
                 .uid(uid)
                 .state(1)
-                .enterpriseKey(enterprise_key).build();
+                .enterpriseKey(enterprise_key)
+                .industryId(enterpriseBasicMsgDto.getIndustryId()).build();
         employeeEnterpriseService.save(employeeEnterprise);
         //拆分主营业务,保存在数据库中
         List<String> business_list = enterpriseBasicMsgDto.getBusiness_list();
@@ -331,6 +332,14 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         return R.SUCCESS().data("enterpriseOperationalMsgVo",enterpriseOperationalMsgVo);
     }
 
+    /**
+     * 获取员工管理的不同状态的企业
+     * @param industryId
+     * @param uid
+     * @param state
+     * @return
+     * @author ascend
+     */
     @Override
     public R getEnterpriseList(Integer industryId, String uid, Integer state) {
         //根据uid查询其企业
@@ -347,6 +356,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
             BeanUtils.copyProperties(enterprise,enterpriseProjectVo);
             //设置完成/保存时间、备注、状态、行业名称
             enterpriseProjectVo.setUpdateOrCompletedTime(employeeEnterprise.getUpdateTime());
+            enterpriseProjectVo.setCreateTime(employeeEnterprise.getCreateTime());
             enterpriseProjectVo.setNote("暂无备注");
             enterpriseProjectVo.setState(employeeEnterprise.getState());
             enterpriseProjectVo.setIndustryName(industryMapper.selectOne(new LambdaQueryWrapper<Industry>()

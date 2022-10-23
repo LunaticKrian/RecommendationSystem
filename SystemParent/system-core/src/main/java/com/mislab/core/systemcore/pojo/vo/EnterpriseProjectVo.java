@@ -36,6 +36,9 @@ public class EnterpriseProjectVo implements Serializable {
     @ApiModelProperty(value = "完成/保存时间")
     private LocalDateTime updateOrCompletedTime;
 
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createTime;
+
     @ApiModelProperty(value = "备注")
     private String note;
 
