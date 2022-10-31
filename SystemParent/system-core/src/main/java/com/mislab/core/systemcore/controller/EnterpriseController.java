@@ -8,9 +8,13 @@ import com.mislab.common.result.ResponseEnum;
 import com.mislab.core.systemcore.common.enums.EnterpriseStateEnum;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
+import com.mislab.core.systemcore.pojo.entity.Business;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
 import com.mislab.core.systemcore.pojo.entity.Enterprise;
+import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
+import com.mislab.core.systemcore.service.BusinessService;
 import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
+import com.mislab.core.systemcore.service.EnterpriseBusinessService;
 import com.mislab.core.systemcore.service.EnterpriseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -40,6 +47,12 @@ public class EnterpriseController {
 
     @Autowired
     private EmployeeEnterpriseService employeeEnterpriseService;
+
+    @Autowired
+    private EnterpriseBusinessService enterpriseBusinessService;
+
+    @Autowired
+    private BusinessService businessService;
 
     @ApiOperation("保存/修改企业基本信息")
     @PostMapping("/saveEnterpriseMsg")
@@ -99,6 +112,25 @@ public class EnterpriseController {
                                       @ApiParam("员工编号") String uid,
                                       @RequestParam(value = "state",required = false) @ApiParam("状态码") Integer state){
         return enterpriseService.getEnterpriseList(industryId,uid,state);
+    }
+
+
+    @ApiOperation("获取企业对应的业务名称")
+    @GetMapping("getBusinessByEnterpriseKey")
+    public R getBusinessByEnterpriseKey(@ApiParam("企业唯一标识码") String enterpriseKey){
+        Assert.notEmpty(enterpriseKey,ResponseEnum.ENTERPRISEKEY_ISEMPTY);
+        Enterprise enterprise = enterpriseService.getOne(new LambdaQueryWrapper<Enterprise>().eq(Enterprise::getEnterpriseKey, enterpriseKey));
+        Assert.notNull(enterprise,ResponseEnum.ENTERPRISE_NOTFOUND);
+
+        List<Integer> businessIds = enterpriseBusinessService.list(new LambdaQueryWrapper<EnterpriseBusiness>().eq(EnterpriseBusiness::getEnterpriseKey, enterpriseKey))
+                .stream().map(EnterpriseBusiness::getBusinessId)
+                .collect(Collectors.toList());
+
+        List<String> res = businessService.listByIds(businessIds)
+                .stream().map(Business::getName)
+                .collect(Collectors.toList());
+
+        return R.SUCCESS().data("businessList",res);
     }
 }
 

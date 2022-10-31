@@ -89,8 +89,8 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
                 .industryId(enterpriseBasicMsgDto.getIndustryId()).build();
         employeeEnterpriseService.save(employeeEnterprise);
         //拆分主营业务,保存在数据库中
-        List<String> business_list = enterpriseBasicMsgDto.getBusiness_list();
-        for (String business : business_list) {
+        List<String> businessList = enterpriseBasicMsgDto.getBusinessList();
+        for (String business : businessList) {
             //获取与业务名称对应的业务id
             Integer business_id = businessMapper.selectOne(new LambdaQueryWrapper<Business>().eq(Business::getName, business)).getId();
             //新增企业与业务的绑定关系到enterprise_business表中
@@ -120,11 +120,11 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         BeanUtils.copyProperties(enterpriseBasicMsgDto, enterprise);
 
         //修改企业与业务的绑定关系到enterprise_business表中
-        List<String> business_list = enterpriseBasicMsgDto.getBusiness_list();
+        List<String> businessList = enterpriseBasicMsgDto.getBusinessList();
         //删除以往的绑定关系
         enterpriseBusinessMapper.delete(new LambdaQueryWrapper<EnterpriseBusiness>()
                 .eq(EnterpriseBusiness::getEnterpriseKey, enterpriseKey));
-        for (String business : business_list) {
+        for (String business : businessList) {
             //获取与业务名称对应的业务id
             Integer business_id = businessMapper.selectOne(new LambdaQueryWrapper<Business>().eq(Business::getName, business)).getId();
             //新增企业与业务的绑定关系到enterprise_business表中
@@ -153,14 +153,14 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         //通过企业业务关联表获取企业对应的业务
         List<EnterpriseBusiness> enterpriseBusinesses = enterpriseBusinessMapper.selectList(new LambdaQueryWrapper<EnterpriseBusiness>()
                 .eq(EnterpriseBusiness::getEnterpriseKey, enterpriseKey));
-        List<String> business_list = new ArrayList<>();
+        List<String> businessList = new ArrayList<>();
         for(EnterpriseBusiness enterpriseBusiness : enterpriseBusinesses){
             //获取行业对应的一个业务名称
             String businessName = businessMapper.selectOne(new LambdaQueryWrapper<Business>()
                     .eq(Business::getId, enterpriseBusiness.getBusinessId())).getName();
-            business_list.add(businessName);
+            businessList.add(businessName);
         }
-        enterpriseBasicMsgVo.setBusiness_list(business_list);
+        enterpriseBasicMsgVo.setBusinessList(businessList);
 
         //转化股东信息以及对外投资信息  将JSON字符串数组转对象集合
         enterpriseBasicMsgVo.setShareholderInfo(JSON.parseArray(enterprise.getShareholderInfo()).toJavaList(ShareholderInfo.class));
@@ -184,7 +184,7 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
             }
         }else{
             //一般纳税人
-            for (String businessName : business_list){
+            for (String businessName : businessList){
                 //这里目前只能固定写
                 if (businessName.equals("运输服务")){
                     taxList.add(TaxRateEnum.COMMONSCALE_TRANSSERVICE);

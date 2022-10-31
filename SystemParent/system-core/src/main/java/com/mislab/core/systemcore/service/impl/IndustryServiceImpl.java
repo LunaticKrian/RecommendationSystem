@@ -1,20 +1,13 @@
 package com.mislab.core.systemcore.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.mislab.common.result.R;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.core.systemcore.mapper.BusinessIndustryMapper;
 import com.mislab.core.systemcore.mapper.BusinessMapper;
-import com.mislab.core.systemcore.pojo.entity.Business;
-import com.mislab.core.systemcore.pojo.entity.BusinessIndustry;
-import com.mislab.core.systemcore.pojo.entity.Industry;
 import com.mislab.core.systemcore.mapper.IndustryMapper;
+import com.mislab.core.systemcore.pojo.entity.Industry;
 import com.mislab.core.systemcore.service.IndustryService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -33,12 +26,12 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry> i
     @Autowired
     private BusinessMapper businessMapper;
 
-    /**
+/*    *//**
      * 通过行业名称获取其对应业务
      * @param industryName
      * @return
      * @author ascend
-     */
+     *//*
     @Override
     public R getBusinessByIndustry(String industryName) {
         //通过企业名称获取企业id
@@ -52,5 +45,5 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry> i
             res.add(businessName);
         }
         return R.SUCCESS().data("business_list", res);
-    }
+    }*/
 }

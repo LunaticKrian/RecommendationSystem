@@ -54,7 +54,8 @@ public enum ResponseEnum {
 
     //企业-员工信息异常
     ENTERPRISE_NOMATCH_EMPLOYEE(-701,"企业与员工不匹配"),
-    ENTERPRISE_NOTFOUND(-702,"企业信息已经不存在")
+    ENTERPRISE_NOTFOUND(-702,"企业信息已经不存在"),
+    ENTERPRISEKEY_ISEMPTY(-703,"企业唯一标识符不能为空")
     ;
 
     // 响应状态码：

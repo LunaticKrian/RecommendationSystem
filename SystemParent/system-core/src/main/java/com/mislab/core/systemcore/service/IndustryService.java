@@ -1,8 +1,7 @@
 package com.mislab.core.systemcore.service;
 
-import com.mislab.common.result.R;
-import com.mislab.core.systemcore.pojo.entity.Industry;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mislab.core.systemcore.pojo.entity.Industry;
 
 /**
  * <p>
@@ -14,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IndustryService extends IService<Industry> {
 
-    R getBusinessByIndustry(String industryName);
+    //R getBusinessByIndustry(String industryName);
 }
