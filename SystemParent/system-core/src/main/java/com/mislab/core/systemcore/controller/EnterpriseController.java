@@ -77,8 +77,7 @@ public class EnterpriseController {
         //如果没有关系，返回异常
         Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
         //如果存在关系，但该企业信息已经不存在（被逻辑删除）
-        Integer state = employeeEnterprise.getState();
-        Assert.notEquals(state, EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
+        Assert.notEquals(employeeEnterprise.getState(),EnterpriseStateEnum.ALREADY_DELETE,ResponseEnum.ENTERPRISE_NOTFOUND);
 
         return enterpriseService.getEnterpriseMsgOfFirst(enterpriseKey);
     }
@@ -86,6 +85,7 @@ public class EnterpriseController {
     @ApiOperation("保存/修改企业经营情况的信息")
     @PostMapping("/saveEnterpriseOperationalMsg")
     public R saveEnterpriseOperationalMsg(@RequestBody EnterpriseOperationalMsgDto enterpriseOperationalMsgDto) {
+        log.info("企业唯一标识为"+enterpriseOperationalMsgDto.getEnterpriseKey());
         Enterprise enterprise = enterpriseService.getOne(new LambdaQueryWrapper<Enterprise>()
                 .eq(Enterprise::getEnterpriseKey, enterpriseOperationalMsgDto.getEnterpriseKey()));
         //如果enterpriseKey为null，返回企业信息未找到异常
