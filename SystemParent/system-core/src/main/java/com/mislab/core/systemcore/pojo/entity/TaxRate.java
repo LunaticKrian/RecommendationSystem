@@ -44,6 +44,4 @@ public class TaxRate implements Serializable {
 
     @ApiModelProperty(value = "税率")
     private Double taxRate;
-
-
 }

@@ -14,6 +14,6 @@ public class EnterpriseInfoVO {
     // 企业信息：
     private Enterprise enterprise;
 
-    // 收入详细信息列表：(根据企业表示enterprise_key进行查询写入，表关联)
+    // 经营业务详细信息列表：
     private List<EnterpriseBusinessTaxVO> enterpriseBusinessList;
 }

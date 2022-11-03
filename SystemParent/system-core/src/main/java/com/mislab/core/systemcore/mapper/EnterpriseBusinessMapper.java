@@ -3,6 +3,7 @@ package com.mislab.core.systemcore.mapper;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBusinessDTO;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mislab.core.systemcore.pojo.vo.EnterpriseBusinessTaxVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -34,4 +35,5 @@ public interface EnterpriseBusinessMapper extends BaseMapper<EnterpriseBusiness>
      */
     int updateByEnterpriseKey(EnterpriseBusinessDTO enterpriseBusinessDTO);
 
+    EnterpriseBusinessTaxVO getEnterpriseBusinessInfoList(String enterpriseKey);
 }
