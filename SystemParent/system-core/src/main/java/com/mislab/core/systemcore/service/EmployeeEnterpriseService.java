@@ -1,5 +1,6 @@
 package com.mislab.core.systemcore.service;
 
+import com.mislab.common.result.R;
 import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EmployeeEnterpriseService extends IService<EmployeeEnterprise> {
 
+    R getProjectNumber(Integer industryId, String uid);
 }

@@ -60,7 +60,7 @@ public class EnterpriseBasicMsgDto implements Serializable {
     private Integer investmentAbroad;
 
     @ApiModelProperty(value = "主营业务[\"运输服务\"]")
-    private List<String> business_list;
+    private List<String> businessList;
 
     @ApiModelProperty(value = "[{\"name\" : \"股东1\"，proportion :\"50\"}]")
     private List<ShareholderInfo> shareholderInfo;

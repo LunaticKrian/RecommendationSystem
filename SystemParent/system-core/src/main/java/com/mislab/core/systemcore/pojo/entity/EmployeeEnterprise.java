@@ -40,6 +40,9 @@ public class EmployeeEnterprise implements Serializable {
     @ApiModelProperty(value = "0:逻辑删除 1:正在进行(保存但未提交) 2:已完成")
     private Integer state;
 
+    @ApiModelProperty(value = "行业id")
+    private Integer industryId;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
