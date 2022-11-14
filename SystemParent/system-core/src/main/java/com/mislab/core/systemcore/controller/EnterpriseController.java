@@ -7,24 +7,22 @@ import com.mislab.common.result.R;
 import com.mislab.common.result.ResponseEnum;
 import com.mislab.core.systemcore.common.enums.EnterpriseStateEnum;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseForSearchDto;
 import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
-import com.mislab.core.systemcore.pojo.entity.Business;
-import com.mislab.core.systemcore.pojo.entity.EmployeeEnterprise;
-import com.mislab.core.systemcore.pojo.entity.Enterprise;
-import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
-import com.mislab.core.systemcore.service.BusinessService;
-import com.mislab.core.systemcore.service.EmployeeEnterpriseService;
-import com.mislab.core.systemcore.service.EnterpriseBusinessService;
-import com.mislab.core.systemcore.service.EnterpriseService;
+import com.mislab.core.systemcore.pojo.entity.*;
+import com.mislab.core.systemcore.pojo.vo.EnterpriseProjectVo;
+import com.mislab.core.systemcore.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +51,9 @@ public class EnterpriseController {
 
     @Autowired
     private BusinessService businessService;
+
+    @Autowired
+    private IndustryService industryService;
 
     @ApiOperation("保存/修改企业基本信息")
     @PostMapping("/saveEnterpriseMsg")
@@ -131,6 +132,30 @@ public class EnterpriseController {
                 .collect(Collectors.toList());
 
         return R.SUCCESS().data("businessList",res);
+    }
+
+    @ApiOperation("通过相关查询条件查询企业信息")
+    @PostMapping("searchForEnterpriseList")
+    public R searchForEnterpriseList(@RequestBody EnterpriseForSearchDto enterpriseForSearchDto){
+        return enterpriseService.searchForEnterpriseList(enterpriseForSearchDto);
+    }
+
+    @ApiOperation("删除企业标识符对应的企业")
+    @DeleteMapping("deleteByEnterpriseKey/{uid}/{enterpriseKey}")
+    public R deleteByEnterpriseKey(@ApiParam("员工id") @PathVariable("uid") String uid,
+                                   @ApiParam("企业唯一标识符") @PathVariable("enterpriseKey") String enterpriseKey){
+        LambdaQueryWrapper<EmployeeEnterprise> queryWrapper = new LambdaQueryWrapper<EmployeeEnterprise>()
+                .eq(EmployeeEnterprise::getEnterpriseKey, enterpriseKey)
+                .eq(EmployeeEnterprise::getUid, uid);
+        //获取企业与员工的关联关系
+        EmployeeEnterprise employeeEnterprise = employeeEnterpriseService.getOne(queryWrapper);
+        //如果没有关系，没有权限操作，返回异常
+        Assert.notNull(enterpriseKey, ResponseEnum.ENTERPRISE_NOMATCH_EMPLOYEE);
+        //执行删除逻辑
+        employeeEnterprise.setState(EnterpriseStateEnum.ALREADY_DELETE.getCode());
+        employeeEnterpriseService.update(employeeEnterprise,queryWrapper);
+
+        return R.SUCCESS().message("删除成功");
     }
 }
 
