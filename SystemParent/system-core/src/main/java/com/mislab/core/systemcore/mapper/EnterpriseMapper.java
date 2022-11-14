@@ -29,5 +29,4 @@ public interface EnterpriseMapper extends BaseMapper<Enterprise> {
     int updateSAAEnterprise(String enterpriseKey,int ST,double AT,double AC);
 
     Enterprise2VO selectDateIITable(String enterpriseKey);
-
 }

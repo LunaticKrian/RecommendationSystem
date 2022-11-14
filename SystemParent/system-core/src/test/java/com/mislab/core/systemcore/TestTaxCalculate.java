@@ -1,6 +1,5 @@
 package com.mislab.core.systemcore;
 
-import com.mislab.core.systemcore.mapper.EnterpriseBusinessMapper;
 import com.mislab.core.systemcore.pojo.entity.Enterprise;
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.mislab.core.systemcore.pojo.entity.TaxRate;
@@ -8,7 +7,6 @@ import com.mislab.core.systemcore.pojo.vo.*;
 import com.mislab.core.systemcore.service.impl.DataEncapsulationImpl;
 import com.mislab.core.systemcore.service.impl.TaxRateServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +26,29 @@ public class TestTaxCalculate {
     private TaxRateServiceImpl taxRateService;
 
     @Autowired
-    private EnterpriseBusinessMapper enterpriseBusinessMapper;
-
-    @Autowired
     private DataEncapsulationImpl dataEncapsulation;
 
 
     @Test
-    public void test() {
-        EnterpriseBusinessTaxVO enterpriseBusinessTaxVOList = dataEncapsulation.getEnterpriseBusinessTaxVOList("6f716900a18e");
-        System.out.println(enterpriseBusinessTaxVOList);
+    public void testGetEnterpriseInfoVO() {
+        EnterpriseInfoVO enterpriseInfoVO = dataEncapsulation.getEnterpriseInfoVO("6f716900a18e");
+        log.info("-------------------------------------------------------");
+        log.info("----------------获取企业信息：{} -------------------------", enterpriseInfoVO.getEnterprise());
+        log.info("-------------------------------------------------------");
+        log.info("----------------获取企业经营业务信息：{}--------------------",enterpriseInfoVO.getEnterpriseBusinessList());
+        log.info("-------------------------------------------------------");
     }
 
+    // 测试计算：
+    @Test
+    public void testCalculate() {
+        // 获取封装数据：
+        EnterpriseInfoVO enterpriseInfoVO = dataEncapsulation.getEnterpriseInfoVO("590a38161264");
+
+        Map<Object, BusinessTaxVO> map = taxRateService.excludesCorporateVAT(enterpriseInfoVO);
+
+        System.out.println(map);
+    }
 
     @Test
     public void testExcludesCorporateVAT() {

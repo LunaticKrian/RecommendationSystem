@@ -78,8 +78,7 @@
         select business.name, enterprise_business.*, tax_rate.*
         from tax_rate
                  INNER JOIN (enterprise_business INNER JOIN business
-            on business.id = enterprise_business.business_id) on tax_rate.
-                                                                     business_id = enterprise_business.business_id
+            on business.id = enterprise_business.business_id) on tax_rate.business_id = enterprise_business.business_id
         where enterprise_key = #{enterpriseKey};
     </select>
 </mapper>

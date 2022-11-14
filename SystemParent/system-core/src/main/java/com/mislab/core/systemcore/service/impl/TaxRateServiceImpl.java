@@ -34,6 +34,9 @@ public class TaxRateServiceImpl extends ServiceImpl<TaxRateMapper, TaxRate> impl
     @Autowired
     private EnterpriseBusinessService enterpriseBusinessService;
 
+    @Autowired
+    private DataEncapsulationImpl dataEncapsulation;
+
     // 计算“不含税营业额”
     public Map<Object, BusinessTaxVO> excludesCorporateVAT(EnterpriseInfoVO enterpriseInfoVO) {
         // 存放各项经营的不含税营业额：
@@ -269,7 +272,6 @@ public class TaxRateServiceImpl extends ServiceImpl<TaxRateMapper, TaxRate> impl
     }
 
     // 计算股东分红所得:
-
     // “企业未分配利润”：=企业所得税的“应纳税所得额”-“企业所得税应纳税额”
     public double undistributedProfit(double taxableIncome, double incomeTaxIndeed) {
         return taxableIncome - incomeTaxIndeed;

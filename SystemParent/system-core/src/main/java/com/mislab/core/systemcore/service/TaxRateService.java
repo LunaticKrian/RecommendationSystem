@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author krian
@@ -19,21 +19,21 @@ import java.util.Map;
  */
 public interface TaxRateService extends IService<TaxRate> {
 
-    public Map<Object, BusinessTaxVO> excludesCorporateVAT(EnterpriseInfoVO enterpriseInfoVO);
+    Map<Object, BusinessTaxVO> excludesCorporateVAT(EnterpriseInfoVO enterpriseInfoVO);
 
-    public Map<String, Double> VATOutputTax(Map<Object, Object> VATMap);
+    Map<String, Double> VATOutputTax(Map<Object, Object> VATMap);
 
-    public Map<String, Double> VATInputTax(EnterpriseCostVO enterpriseCostVO);
+    Map<String, Double> VATInputTax(EnterpriseCostVO enterpriseCostVO);
 
-    public Map<String, Double> VATPayable(Map<String, Double> VATOutputTax, Map<String, Double> VATInputTax);
+    Map<String, Double> VATPayable(Map<String, Double> VATOutputTax, Map<String, Double> VATInputTax);
 
-    public Map<Object, Double> surtax(Map<String, Double> VATPayable, Enterprise enterprise);
+    Map<Object, Double> surtax(Map<String, Double> VATPayable, Enterprise enterprise);
 
-    public double taxableIncome(EnterpriseInfoVO enterpriseInfoVO);
+    double taxableIncome(EnterpriseInfoVO enterpriseInfoVO);
 
-    public double incomeTaxIndeed(double taxableIncome, int enterpriseType);
+    double incomeTaxIndeed(double taxableIncome, int enterpriseType);
 
-    public double undistributedProfit(double taxableIncome, double incomeTaxIndeed);
+    double undistributedProfit(double taxableIncome, double incomeTaxIndeed);
 
-    public double shareholderPersonalTax(double undistributedProfit);
+    double shareholderPersonalTax(double undistributedProfit);
 }

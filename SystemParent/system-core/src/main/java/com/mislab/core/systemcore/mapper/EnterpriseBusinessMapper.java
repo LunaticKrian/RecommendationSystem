@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author krian
@@ -28,12 +28,20 @@ public interface EnterpriseBusinessMapper extends BaseMapper<EnterpriseBusiness>
     /**
      * 根据enterpriseKey放入数据
      */
-    int setByEnterpriseKey(EnterpriseBusiness enterpriseBusiness,String enterpriseKey);
+    int setByEnterpriseKey(EnterpriseBusiness enterpriseBusiness, String enterpriseKey);
 
     /**
      * 修改已有的enterprise数据
      */
     int updateByEnterpriseKey(EnterpriseBusinessDTO enterpriseBusinessDTO);
 
-    EnterpriseBusinessTaxVO getEnterpriseBusinessInfoList(String enterpriseKey);
+    /**
+     * 封装 企业信息和企业经营项目信息以及相关税率
+     *
+     * @param enterpriseKey
+     * @return
+     */
+    List<EnterpriseBusinessTaxVO> getEnterpriseBusinessInfoList(String enterpriseKey);
+
+
 }
