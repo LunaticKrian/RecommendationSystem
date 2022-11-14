@@ -2,20 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mislab.core.systemcore.mapper.CostMapper">
 
-    <resultMap type="com.mislab.core.systemcore.pojo.entity.Cost" id="EnterpriseBusiness">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="industryId" column="industry_id" jdbcType="INTEGER"/>
-    </resultMap>
-
-
-    <insert id="insertCost" keyProperty="costDto.id" useGeneratedKeys="true">
-        insert into cost(name ,supplier_proportion)
-        values (#{name},#{costJson})
-    </insert>
-    <update id="updateCost">
-        update cost
-        set name  = #{name},supplier_proportion=#{costJson}
-        where id = #{costId}
-    </update>
 </mapper>

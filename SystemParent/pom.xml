@@ -10,7 +10,6 @@
         <module>system-core</module>
         <module>system-common</module>
     </modules>
-
     <!--SpringBoot父工程依赖-->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -117,7 +116,6 @@
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <version>${commons-fileupload.version}</version>
             </dependency>
 
             <!--commons-io-->
@@ -131,7 +129,6 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
-                <version>${alibaba.easyexcel.version}</version>
             </dependency>
             <!--excel解析依赖-->
             <dependency>
@@ -149,33 +146,31 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>${json.version}</version>
+                <version>20140107</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
+                <version>2.8.6</version>
             </dependency>
 
             <!--阿里云SDK远程调用-->
-            <dependency>
-                <groupId>com.aliyun</groupId>
-                <artifactId>aliyun-java-sdk-core</artifactId>
-                <version>${aliyun-java-sdk-core.version}</version>
-            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>com.aliyun</groupId>-->
+            <!--                <artifactId>aliyun-java-sdk-core</artifactId>-->
+            <!--            </dependency>-->
 
             <!--阿里云文件管理-->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
-                <version>${aliyun-sdk-oss.version}</version>
             </dependency>
 
             <!--日期时间工具-->
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>${jodatime.version}</version>
+                <version>2.10.6</version>
             </dependency>
 
             <!--jwt工具-->
@@ -189,7 +184,6 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
             </dependency>
 
         </dependencies>
