@@ -49,8 +49,6 @@ public class EnterpriseBusinessServiceImpl extends ServiceImpl<EnterpriseBusines
         return EPBs;
     }
 
-
-
     @Override
     public int setSTATAC(String enterpriseKey,int ST,double AT, double AC) {
         enterpriseMapper.updateSAAEnterprise(enterpriseKey,ST,AT,AC);

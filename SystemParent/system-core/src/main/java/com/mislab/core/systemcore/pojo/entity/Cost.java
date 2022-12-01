@@ -25,7 +25,7 @@ public class Cost implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @ApiModelProperty(value = "成本费用类别")
@@ -39,6 +39,4 @@ public class Cost implements Serializable {
 
     @ApiModelProperty(value = "行业id")
     private Integer industryId;
-
-
 }

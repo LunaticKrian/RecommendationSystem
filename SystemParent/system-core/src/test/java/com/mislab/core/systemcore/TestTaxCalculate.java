@@ -1,11 +1,12 @@
 package com.mislab.core.systemcore;
 
-import com.mislab.core.systemcore.pojo.entity.Enterprise;
-import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
-import com.mislab.core.systemcore.pojo.entity.TaxRate;
-import com.mislab.core.systemcore.pojo.vo.*;
-import com.mislab.core.systemcore.service.impl.DataEncapsulationImpl;
-import com.mislab.core.systemcore.service.impl.TaxRateServiceImpl;
+import com.mislab.core.systemcore.pojo.calculation.pojo.EnterpriseCostDTO;
+import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
+import com.mislab.core.systemcore.pojo.calculation.pojo.BusinessTaxInfoDTO;
+import com.mislab.core.systemcore.pojo.calculation.pojo.EnterpriseBusinessInfoDTO;
+import com.mislab.core.systemcore.service.EnterpriseCostService;
+import com.mislab.core.systemcore.service.calculation.impl.DataEncapsulationImpl;
+import com.mislab.core.systemcore.service.calculation.impl.CalculationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 @Slf4j
@@ -23,144 +23,84 @@ import java.util.Map;
 public class TestTaxCalculate {
 
     @Autowired
-    private TaxRateServiceImpl taxRateService;
+    private CalculationServiceImpl calculationService;
 
     @Autowired
     private DataEncapsulationImpl dataEncapsulation;
 
+    @Autowired
+    private EnterpriseCostService enterpriseCostService;
 
     @Test
-    public void testGetEnterpriseInfoVO() {
-        EnterpriseInfoVO enterpriseInfoVO = dataEncapsulation.getEnterpriseInfoVO("6f716900a18e");
-        log.info("-------------------------------------------------------");
-        log.info("----------------获取企业信息：{} -------------------------", enterpriseInfoVO.getEnterprise());
-        log.info("-------------------------------------------------------");
-        log.info("----------------获取企业经营业务信息：{}--------------------",enterpriseInfoVO.getEnterpriseBusinessList());
-        log.info("-------------------------------------------------------");
+    public void getData(){
+        EnterpriseCostDTO costDTO = dataEncapsulation.getEnterpriseCostDTO("sddsads");
+        System.out.println(costDTO.toString());
     }
 
-    // 测试计算：
+
     @Test
     public void testCalculate() {
         // 获取封装数据：
-        EnterpriseInfoVO enterpriseInfoVO = dataEncapsulation.getEnterpriseInfoVO("590a38161264");
+        EnterpriseBusinessInfoDTO enterpriseBusinessInfoDTO = dataEncapsulation.getEnterpriseInfoDTO("sddsads");
+        Map<Object, BusinessTaxInfoDTO> map = calculationService.excludesCorporateVAT(enterpriseBusinessInfoDTO);
 
-        Map<Object, BusinessTaxVO> map = taxRateService.excludesCorporateVAT(enterpriseInfoVO);
-
-        System.out.println(map);
-    }
-
-    @Test
-    public void testExcludesCorporateVAT() {
-        EnterpriseInfoVO enterpriseInfoVO = new EnterpriseInfoVO();
-        Enterprise enterprise = new Enterprise();
-
-        enterprise.setSalesTaxpayer(0);
-        enterprise.setTaxpayerQualification(0);
-        enterprise.setInvoiceType(2);
-
-        EnterpriseBusinessTaxVO businessTaxVO01 = new EnterpriseBusinessTaxVO("运输服务", 100.0, new TaxRate(), new EnterpriseBusiness());
-        EnterpriseBusinessTaxVO businessTaxVO02 = new EnterpriseBusinessTaxVO("仓储服务", 100.0, new TaxRate(), new EnterpriseBusiness());
-        EnterpriseBusinessTaxVO businessTaxVO03 = new EnterpriseBusinessTaxVO("搬运服务服务", 100.0, new TaxRate(), new EnterpriseBusiness());
-        EnterpriseBusinessTaxVO businessTaxVO04 = new EnterpriseBusinessTaxVO("运输代理服务", 100.0, new TaxRate(), new EnterpriseBusiness());
-
-        List<EnterpriseBusinessTaxVO> enterpriseBusinessTaxVOS = new ArrayList<>();
-
-        enterpriseBusinessTaxVOS.add(businessTaxVO01);
-        enterpriseBusinessTaxVOS.add(businessTaxVO02);
-        enterpriseBusinessTaxVOS.add(businessTaxVO03);
-        enterpriseBusinessTaxVOS.add(businessTaxVO04);
-
-        enterpriseInfoVO.setEnterprise(enterprise);
-        enterpriseInfoVO.setEnterpriseBusinessList(enterpriseBusinessTaxVOS);
-
-        Map<Object, BusinessTaxVO> objectObjectMap = taxRateService.excludesCorporateVAT(enterpriseInfoVO);
-
-        System.out.println(objectObjectMap);
-    }
-
-
-    @Test
-    public void testVATInputTax() {
-        EnterpriseCostVO enterpriseCostVO = new EnterpriseCostVO();
-
-        CostInfoVO costInfoVO1 = new CostInfoVO();
-        costInfoVO1.setCostName("车辆成本");
-        costInfoVO1.setAmount(100);
-
-        CostInfoVO costInfoVO2 = new CostInfoVO();
-        costInfoVO2.setCostName("人工成本");
-        costInfoVO2.setAmount(100);
-
-        CostInfoVO costInfoVO3 = new CostInfoVO();
-        costInfoVO3.setCostName("办公成本");
-        costInfoVO3.setAmount(100);
-
-        CostInfoVO costInfoVO4 = new CostInfoVO();
-        costInfoVO4.setCostName("运输成本(油费）");
-        costInfoVO4.setAmount(100);
-
-        CostInfoVO costInfoVO5 = new CostInfoVO();
-        costInfoVO5.setCostName("运输成本(路桥费)");
-        costInfoVO5.setAmount(100);
-
-        ArrayList<CostInfoVO> costInfoVoList = new ArrayList<>();
-
-        costInfoVoList.add(costInfoVO1);
-        costInfoVoList.add(costInfoVO2);
-        costInfoVoList.add(costInfoVO3);
-        costInfoVoList.add(costInfoVO4);
-        costInfoVoList.add(costInfoVO5);
-
-        SupplierProportionInfoVO supplierProportionInfoVO1 = new SupplierProportionInfoVO();
-        supplierProportionInfoVO1.setName("一般纳税人(新车)");
-        supplierProportionInfoVO1.setPercentage(0.3);
-        supplierProportionInfoVO1.setTaxRate(0.13);
-
-        SupplierProportionInfoVO supplierProportionInfoVO2 = new SupplierProportionInfoVO();
-        supplierProportionInfoVO2.setName("一般纳税人(新车)");
-        supplierProportionInfoVO2.setPercentage(0.3);
-        supplierProportionInfoVO2.setTaxRate(0.13);
-
-        SupplierProportionInfoVO supplierProportionInfoVO3 = new SupplierProportionInfoVO();
-        supplierProportionInfoVO3.setName("一般纳税人(新车)");
-        supplierProportionInfoVO3.setPercentage(0.3);
-        supplierProportionInfoVO3.setTaxRate(0.13);
-
-        SupplierProportionInfoVO supplierProportionInfoVO4 = new SupplierProportionInfoVO();
-        supplierProportionInfoVO4.setName("一般纳税人(新车)");
-        supplierProportionInfoVO4.setPercentage(0.3);
-        supplierProportionInfoVO4.setTaxRate(0.13);
-
-        SupplierProportionInfoVO supplierProportionInfoVO5 = new SupplierProportionInfoVO();
-        supplierProportionInfoVO5.setName("一般纳税人(新车)");
-        supplierProportionInfoVO5.setPercentage(0.3);
-        supplierProportionInfoVO5.setTaxRate(0.13);
-
-        ArrayList<SupplierProportionInfoVO> supplierProportionInfoVOList = new ArrayList<>();
-
-        supplierProportionInfoVOList.add(supplierProportionInfoVO1);
-        supplierProportionInfoVOList.add(supplierProportionInfoVO2);
-        supplierProportionInfoVOList.add(supplierProportionInfoVO3);
-        supplierProportionInfoVOList.add(supplierProportionInfoVO4);
-        supplierProportionInfoVOList.add(supplierProportionInfoVO5);
-
-        costInfoVO1.setList(supplierProportionInfoVOList);
-        costInfoVO2.setList(supplierProportionInfoVOList);
-        costInfoVO3.setList(supplierProportionInfoVOList);
-        costInfoVO4.setList(supplierProportionInfoVOList);
-        costInfoVO5.setList(supplierProportionInfoVOList);
-
-        enterpriseCostVO.setCostInfoVOList(costInfoVoList);
-
-        // 调用方法：
-        Map<String, Double> stringDoubleMap = taxRateService.VATInputTax(enterpriseCostVO);
-
-        // 输出结果：
-        for (Map.Entry<String, Double> entry : stringDoubleMap.entrySet()) {
-            String key = entry.getKey();
-            Double value = entry.getValue();
-            System.out.println(key + ":" + value);
+        // -------------不含营业税额计算测试---------------
+        double sum = 0;
+        Collection<BusinessTaxInfoDTO> values = map.values();
+        for (BusinessTaxInfoDTO item : values) {
+            sum += item.getAmount();
         }
+        log.info("计算结果：{}", sum);
+
+        // -------------增值税销项税额计算测试---------------
+        Map<String, Double> vatOutputTax = calculationService.excludesVATOutputTax(map);
+        double sumVatOutputTax = 0;
+        Collection<Double> values1 = vatOutputTax.values();
+        for (Double i : values1) {
+            sumVatOutputTax += i;
+        }
+        log.info("增值税销项税额计算结果：{}", sumVatOutputTax);
+
+
+        EnterpriseCostDTO costDTO = dataEncapsulation.getEnterpriseCostDTO("sddsads");
+        Map<String, Double> vatInputTax = calculationService.excludesVATInputTax(costDTO);
+        System.out.println(vatInputTax.toString());
+        double sum01 = 0.0;
+        Collection<Double> values01 = vatInputTax.values();
+        for (double i:values01
+             ) {
+            sum01 += i;
+
+        }
+
+        System.out.println("计算结果：" + sum01);
+
+        System.out.println("--------------------------");
+
+        double v = calculationService.excludesVATPayable(sumVatOutputTax, sum01);
+        System.out.println("最后计算结果" + v);
+
+        System.out.println("---------------------");
+
+        double v1 = calculationService.excludesSurTax(v, enterpriseBusinessInfoDTO.getEnterprise());
+        System.out.println(v1);
+
+        System.out.println("----------------------");
+
+        double v2 = calculationService.excludesTaxableIncome(enterpriseBusinessInfoDTO);
+        System.out.println(v2);
+
+        System.out.println("----------------------");
+
+        double v3 = calculationService.excludesIncomeTaxIndeed(v2, enterpriseBusinessInfoDTO.getEnterprise().getEnterpriseType());
+        System.out.println(v3);
+
+        System.out.println("----------------------");
+
+        double v4 = calculationService.excludesUndistributedProfit(v2, v3);
+        System.out.println(v4);
+
+        double v5 = calculationService.excludesShareholderPersonalTax(v4);
+        System.out.println(v5);
     }
 }

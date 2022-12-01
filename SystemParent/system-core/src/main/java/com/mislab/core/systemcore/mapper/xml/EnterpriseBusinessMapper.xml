@@ -9,7 +9,7 @@
         <result property="naturalPersonRatio" column="natural_person_ratio" jdbcType="DOUBLE"/>
     </resultMap>
 
-    <resultMap id="EnterpriseBusinessInfo" type="com.mislab.core.systemcore.pojo.vo.EnterpriseBusinessTaxVO">
+    <resultMap id="EnterpriseBusinessInfo" type="com.mislab.core.systemcore.pojo.calculation.pojo.EnterpriseBusinessTaxInfoDTO">
         <result property="businessName" column="name" jdbcType="VARCHAR"/>
         <association property="taxRate" javaType="com.mislab.core.systemcore.pojo.entity.TaxRate">
             <id property="id" column="id"/>

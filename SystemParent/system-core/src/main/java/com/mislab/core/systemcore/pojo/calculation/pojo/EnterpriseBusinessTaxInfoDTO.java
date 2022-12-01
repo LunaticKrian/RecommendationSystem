@@ -1,8 +1,9 @@
-package com.mislab.core.systemcore.pojo.vo;
+package com.mislab.core.systemcore.pojo.calculation.pojo;
 
 import com.mislab.core.systemcore.pojo.entity.EnterpriseBusiness;
 import com.mislab.core.systemcore.pojo.entity.TaxRate;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,17 +11,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel("企业经营项目信息")
-public class EnterpriseBusinessTaxVO {
-    // 业务名称：
+@ApiModel("【计算使用】企业经营项目信息")
+public class EnterpriseBusinessTaxInfoDTO {
+    @ApiModelProperty(value = "业务名称")
     private String businessName;
 
-    // 业务收入：
+    @ApiModelProperty(value = "当前业务营业额")
     private Double amount;
 
-    // 业务税率：
+    @ApiModelProperty(value = "当前业务税率")
     private TaxRate taxRate;
 
-    // 业务信息：
+    @ApiModelProperty(value = "业务信息")
     private EnterpriseBusiness enterpriseBusiness;
 }

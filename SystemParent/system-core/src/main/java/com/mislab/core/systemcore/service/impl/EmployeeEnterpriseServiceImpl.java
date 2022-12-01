@@ -23,7 +23,6 @@ import java.util.Map;
 @Service
 public class EmployeeEnterpriseServiceImpl extends ServiceImpl<EmployeeEnterpriseMapper, EmployeeEnterprise> implements EmployeeEnterpriseService {
 
-
     /**
      * 统计员工已/待完成的项目数量
      * @param industryId

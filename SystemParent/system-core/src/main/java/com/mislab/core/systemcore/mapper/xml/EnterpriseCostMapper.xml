@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mislab.core.systemcore.mapper.EnterpriseCostMapper">
+
+    <!--根据ID，查询企业支出花销-->
+    <select id="findCostById" resultType="com.mislab.core.systemcore.pojo.dto.CostRelatedDto">
+        select name, cost_ratio, supplier_proportion, industry_id
+        from cost
+        where id = #{id}
+    </select>
+
+    <select id="findCostInfoById" resultType="com.mislab.core.systemcore.pojo.entity.Cost">
+        select id, name, cost_ratio, supplier_proportion, industry_id
+        from cost
+        where id = #{id}
+    </select>
+</mapper>

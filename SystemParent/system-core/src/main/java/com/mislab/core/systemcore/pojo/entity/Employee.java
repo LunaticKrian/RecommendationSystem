@@ -61,6 +61,4 @@ public class Employee implements Serializable {
     @TableField("is_deleted")
     @TableLogic
     private Boolean deleted;
-
-
 }

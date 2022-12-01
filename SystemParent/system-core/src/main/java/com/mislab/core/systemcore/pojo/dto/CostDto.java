@@ -29,6 +29,4 @@ public class CostDto implements Serializable {
 
     @ApiModelProperty(value = "供应商资质")
     private List<SupplierProportion> supplierProportions;
-
-
 }

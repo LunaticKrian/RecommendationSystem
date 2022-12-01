@@ -1,4 +1,4 @@
-package com.mislab.core.systemcore.controller.api;
+package com.mislab.core.systemcore.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -42,9 +42,6 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-
     @ApiOperation("注册员工信息")
     @PostMapping("/register")
     public R save(@RequestBody RegisterVo registerVo){
@@ -57,9 +54,6 @@ public class EmployeeController {
         Assert.notEmpty(password, ResponseEnum.PASSWORD_NULL_ERROR);
         Assert.notEmpty(code, ResponseEnum.CODE_NULL_ERROR);
         Assert.isTrue(RegexValidateUtils.checkCellphone(mobile), ResponseEnum.MOBILE_ERROR);
-
-//        String codeGen = (String)redisTemplate.opsForValue().get("mislab:sms:code:" + mobile);
-//        Assert.equals(code, codeGen, ResponseEnum.CODE_ERROR);
 
         employeeService.register(registerVo);
         return R.SUCCESS().message("注册成功，等待管理员审批！");
@@ -91,6 +85,5 @@ public class EmployeeController {
         BeanUtils.copyProperties(employee,employeeMsgVo);
         return R.SUCCESS().data("employeeMsg",employeeMsgVo);
     }
-
 }
 
