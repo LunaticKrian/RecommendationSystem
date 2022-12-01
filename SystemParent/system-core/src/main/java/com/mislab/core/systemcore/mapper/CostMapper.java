@@ -1,8 +1,7 @@
 package com.mislab.core.systemcore.mapper;
 
-import com.mislab.core.systemcore.pojo.dto.CostDto;
-import com.mislab.core.systemcore.pojo.entity.Cost;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mislab.core.systemcore.pojo.entity.Cost;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -16,9 +15,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CostMapper extends BaseMapper<Cost> {
-    //添加cost
-    int insertCost(CostDto costDto,String name, String costJson);
-    //修改cost
-    int updateCost(String name,String costJson, int costId);
-    //根据id获取cost（mp有自带）
 }

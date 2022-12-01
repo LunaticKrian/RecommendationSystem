@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mislab.common.result.R;
 import com.mislab.core.systemcore.common.enums.TaxRateEnum;
 import com.mislab.core.systemcore.mapper.*;
-import com.mislab.core.systemcore.pojo.dto.CostRelatedDto;
-import com.mislab.core.systemcore.pojo.dto.EnterpriseBasicMsgDto;
-import com.mislab.core.systemcore.pojo.dto.EnterpriseOperationalMsgDto;
-import com.mislab.core.systemcore.pojo.dto.RevenueRelatedDto;
+import com.mislab.core.systemcore.pojo.dto.*;
 import com.mislab.core.systemcore.pojo.entity.*;
 import com.mislab.core.systemcore.pojo.jsonDomain.Investee;
 import com.mislab.core.systemcore.pojo.jsonDomain.ShareholderInfo;
@@ -28,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -373,6 +371,51 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
             res = enterpriseProjectVoList.stream().filter(o->o.getState().equals(state)).collect(Collectors.toList());
         }
         return R.SUCCESS().data("enterpriseList",res);
+    }
+
+    @Override
+    public R searchForEnterpriseList(EnterpriseForSearchDto enterpriseForSearchDto) {
+
+        //根据行业、创建/完成日期、enterpriseKey,企业名称模糊查询,然后根据state,uid筛选
+        List<String> enterpriseKeyList = this.list(new LambdaQueryWrapper<Enterprise>()
+                .eq(!StringUtils.isEmpty(enterpriseForSearchDto.getIndustryName()), Enterprise::getIndustryId, Optional.ofNullable(industryMapper.selectOne(new LambdaQueryWrapper<Industry>().eq(Industry::getIndustryName, enterpriseForSearchDto.getIndustryName()))).map(Industry::getId).orElse(1))
+                .like(!StringUtils.isEmpty(enterpriseForSearchDto.getEnterpriseName()),Enterprise::getEnterpriseName,enterpriseForSearchDto.getEnterpriseName())
+                .like(!StringUtils.isEmpty(enterpriseForSearchDto.getEnterpriseKey()), Enterprise::getEnterpriseKey, enterpriseForSearchDto.getEnterpriseKey())
+                .between(enterpriseForSearchDto.getCreateStartTime()!=null&&enterpriseForSearchDto.getCreateEndTime()!=null, Enterprise::getCreateTime, enterpriseForSearchDto.getCreateStartTime(), enterpriseForSearchDto.getCreateEndTime())
+                .between(enterpriseForSearchDto.getFinishedStartTime()!=null&&enterpriseForSearchDto.getFinishedEndTime()!=null, Enterprise::getUpdateTime, enterpriseForSearchDto.getFinishedStartTime(), enterpriseForSearchDto.getFinishedEndTime()))
+                .stream().map(Enterprise::getEnterpriseKey)
+                .filter(enterpriseKey -> enterpriseForSearchDto.getState() == null || employeeEnterpriseService.getOne(new LambdaQueryWrapper<EmployeeEnterprise>().eq(EmployeeEnterprise::getEnterpriseKey, enterpriseKey)).getState().equals(enterpriseForSearchDto.getState()))
+                .filter(enterpriseKey -> employeeEnterpriseService.getOne(new LambdaQueryWrapper<EmployeeEnterprise>().eq(EmployeeEnterprise::getEnterpriseKey,enterpriseKey)).getUid().equals(enterpriseForSearchDto.getUid()))
+                .collect(Collectors.toList());
+
+        log.info("符合条件的企业唯一标识码为："+enterpriseKeyList);
+
+        List<EmployeeEnterprise> employeeEnterpriseList = new ArrayList<>();
+        for (String enterpriseKey:enterpriseKeyList){
+            employeeEnterpriseList.add(employeeEnterpriseService.getOne(new LambdaQueryWrapper<EmployeeEnterprise>().eq(EmployeeEnterprise::getEnterpriseKey,enterpriseKey)));
+        }
+
+        //封装企业信息集合
+        List<EnterpriseProjectVo> enterpriseProjectVoList = new ArrayList<>();
+        //找到该行业对应的企业
+        for (EmployeeEnterprise employeeEnterprise : employeeEnterpriseList){
+            Enterprise enterprise = enterpriseMapper.selectOne(new LambdaQueryWrapper<Enterprise>()
+                    .eq(Enterprise::getEnterpriseKey, employeeEnterprise.getEnterpriseKey())
+                    .eq(Enterprise::getIndustryId,employeeEnterprise.getIndustryId()));
+            EnterpriseProjectVo enterpriseProjectVo = new EnterpriseProjectVo();
+            BeanUtils.copyProperties(enterprise,enterpriseProjectVo);
+            //设置完成/保存时间、备注、状态、行业名称
+            enterpriseProjectVo.setUpdateOrCompletedTime(employeeEnterprise.getUpdateTime());
+            enterpriseProjectVo.setCreateTime(employeeEnterprise.getCreateTime());
+            enterpriseProjectVo.setNote("暂无备注");
+            enterpriseProjectVo.setState(employeeEnterprise.getState());
+            enterpriseProjectVo.setIndustryName(industryMapper.selectOne(new LambdaQueryWrapper<Industry>()
+                    .eq(Industry::getId,enterprise.getIndustryId())).getIndustryName());
+            //存入集合中
+            enterpriseProjectVoList.add(enterpriseProjectVo);
+        }
+
+        return R.SUCCESS().data("enterpriseList",enterpriseProjectVoList);
     }
 
 }
