@@ -244,10 +244,10 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
                     .eq(EnterpriseBusiness::getBusinessId,business.getId()));
         }
 
-        //存放成本相关信息到cost表中,如果之前有企业已经有cost_type消息，那么应该先删除之前的，防止后期数据库数据量过多
+        //12.14改 存放成本相关信息到cost表中,如果之前有企业已经有cost_type消息，那么应该先删除之前的
         String costType = enterprise.getCostType();
-        if (!StringUtils.isEmpty(costType)){
-            List<Integer> costTypeList = JSONArray.parseArray(costType).toJavaList(Integer.class);
+        List<Integer> costTypeList = JSONArray.parseArray(costType).toJavaList(Integer.class);
+        if (costTypeList.size() != 0){
             costMapper.deleteBatchIds(costTypeList);
         }
         //执行cost新增操作
