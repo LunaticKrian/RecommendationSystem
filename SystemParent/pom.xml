@@ -86,24 +86,31 @@
                 <version>${velocity.version}</version>
             </dependency>
 
-            <!--swagger-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <!--swagger ui-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <!--swagger-bootstrap-ui-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>swagger-bootstrap-ui</artifactId>
-                <version>${swagger-bootstrap-ui.version}</version>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
+                <version>2.0.6</version>
             </dependency>
+
+<!--            &lt;!&ndash;swagger&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>io.springfox</groupId>-->
+<!--                <artifactId>springfox-swagger2</artifactId>-->
+<!--                <version>${swagger.version}</version>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash;swagger ui&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>io.springfox</groupId>-->
+<!--                <artifactId>springfox-swagger-ui</artifactId>-->
+<!--                <version>${swagger.version}</version>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash;swagger-bootstrap-ui&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.github.xiaoymin</groupId>-->
+<!--                <artifactId>swagger-bootstrap-ui</artifactId>-->
+<!--                <version>${swagger-bootstrap-ui.version}</version>-->
+<!--            </dependency>-->
 
             <!--commons-lang3-->
             <dependency>

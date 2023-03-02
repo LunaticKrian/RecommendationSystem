@@ -34,7 +34,6 @@ import static com.mislab.core.systemcore.common.enums.calculation.CommentConstan
  */
 @Slf4j
 @Service
-
 public class CalculationServiceImpl extends ServiceImpl<TaxRateMapper, TaxRate> implements CalculationService {
 
     /**

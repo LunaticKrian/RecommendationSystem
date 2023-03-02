@@ -246,9 +246,12 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
 
         //12.14改 存放成本相关信息到cost表中,如果之前有企业已经有cost_type消息，那么应该先删除之前的
         String costType = enterprise.getCostType();
-        List<Integer> costTypeList = JSONArray.parseArray(costType).toJavaList(Integer.class);
-        if (costTypeList.size() != 0){
-            costMapper.deleteBatchIds(costTypeList);
+        List<Integer> costTypeList = null;
+        if(StringUtils.isEmpty(costType)){
+            costTypeList = JSONArray.parseArray(costType).toJavaList(Integer.class);
+            if (costTypeList.size() != 0){
+                costMapper.deleteBatchIds(costTypeList);
+            }
         }
         //执行cost新增操作
         List<CostRelatedDto> costRelatedList = enterpriseOperationalMsgDto.getCostRelatedList();
